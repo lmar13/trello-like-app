@@ -1,5 +1,20 @@
 import { StateService } from './../../@core/data/state.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { NbMenuItem } from '@nebular/theme';
+
+export const subMenu: NbMenuItem[] = [
+  {
+    title: 'Project List',
+    link: '/pages/trello',
+  },
+  {
+    title: 'Project Board',
+    link: '/pages/trello/board'
+  },
+  {
+    title: 'Something'
+  }
+];
 
 @Component({
   selector: 'trello',

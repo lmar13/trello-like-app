@@ -4,6 +4,8 @@ import { NgModule } from '@angular/core';
 
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { TrelloListComponent } from './trello/trello-list/trello-list.component';
+import { TrelloBoardComponent } from './trello/trello-board/trello-board.component';
 
 const routes: Routes = [{
   path: '',
@@ -15,7 +17,17 @@ const routes: Routes = [{
     },
     {
       path: 'trello',
-      component: TrelloComponent
+      component: TrelloComponent,
+      children: [
+        {
+          path: '',
+          component: TrelloListComponent,
+        },
+        {
+          path: 'board',
+          component: TrelloBoardComponent,
+        },
+      ]
     },
     {
       path: '',

@@ -10,6 +10,7 @@ import {
 } from '@nebular/theme';
 
 import { StateService } from '../../../@core/data/state.service';
+import { subMenu } from '../../../pages/trello/trello.component';
 
 // TODO: move layouts into the framework
 @Component({
@@ -19,13 +20,7 @@ import { StateService } from '../../../@core/data/state.service';
 })
 export class SampleLayoutComponent implements OnDestroy {
 
-  subMenu: NbMenuItem[] = [
-    {
-      title: 'PAGE LEVEL MENU',
-      icon: 'nb-angle-double-right'
-
-    },
-  ];
+  subMenu = subMenu;
   layout: any = {};
   sidebar: any = {};
 
