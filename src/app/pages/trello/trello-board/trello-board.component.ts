@@ -5,8 +5,9 @@ import { WebSocketService } from '../../../@core/data/ws.service';
 import { Board, Column, Card } from '../../../@core/model';
 import { TrelloColumnService } from '../trello-column/trello-column.service';
 import { TrelloBoardService } from './trello-board.service';
+import jQuery from 'jquery';
 
-declare var jQuery: any;
+// declare var jQuery: any;
 var curYPos = 0,
   curXPos = 0,
   curDown = false;
@@ -17,15 +18,13 @@ var curYPos = 0,
 })
 export class TrelloBoardComponent implements OnInit {
 
-  board: Board;
+  board = {} as Board;
   addingColumn = false;
   addColumnText: string;
   editingTilte = false;
   currentTitle: string;
   boardWidth: number;
   columnsAdded: number = 0;
-
-  boardId = null;
 
   constructor(
     private smartTableService: SmartTableService,
@@ -36,7 +35,7 @@ export class TrelloBoardComponent implements OnInit {
     private _route: ActivatedRoute
 
   ) {
-    this.smartTableService.selectedBoard.subscribe(id => this.boardId = id);
+    this.smartTableService.selectedBoard.subscribe(id => this.board._id = id);
   }
 
   ngOnInit() {
