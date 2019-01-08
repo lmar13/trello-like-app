@@ -18,10 +18,10 @@ export const subMenu: NbMenuItem[] = [
 ];
 
 @Component({
-  selector: 'trello',
+  selector: 'ngx-trello',
   template: `
     <div class="row">
-      <nb-card>
+      <nb-card style="width: 100%">
         <nb-card-header>Trello</nb-card-header>
         <nb-card-body>
           <router-outlet></router-outlet>
