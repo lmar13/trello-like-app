@@ -7,7 +7,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 })
 export class SmartTableService {
 
-  private selectedBoardSource = new BehaviorSubject(0);
+  private selectedBoardSource = new BehaviorSubject("0");
   selectedBoard = this.selectedBoardSource.asObservable();
 
   constructor(
@@ -22,7 +22,7 @@ export class SmartTableService {
     return this.httpClient.get<string[]>(`./../../../assets/data/data.json`);
   }
 
-  changeSelectedBoard(id: number) {
+  changeSelectedBoard(id: string) {
     this.selectedBoardSource.next(id);
   }
 }
