@@ -5,7 +5,9 @@ import { Injectable } from '@angular/core';
 
 let counter = 0;
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class UserService {
 
   private users = {
