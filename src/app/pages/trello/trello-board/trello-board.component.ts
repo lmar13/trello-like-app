@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy, ElementRef } from '@angular/core';
-import { SmartTableService } from '../../../@core/data/smart-table.service';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import jQuery from 'jquery';
+import { SmartTableService } from '../../../@core/data/smart-table.service';
 import { WebSocketService } from '../../../@core/data/ws.service';
-import { Board, Column, Card } from '../../../@core/model';
+import { Board, Card} from '../../../@core/model';
 import { TrelloColumnService } from '../trello-column/trello-column.service';
 import { TrelloBoardService } from './trello-board.service';
-import jQuery from 'jquery';
 
 // declare var jQuery: any;
 var curYPos = 0,
@@ -36,15 +36,11 @@ export class TrelloBoardComponent implements OnInit {
 
   ) {
     this.smartTableService.selectedBoard.subscribe(id => this.board._id = id);
+    this.board.columns = ['Planing', 'Development', 'Testing', 'Ready to archive'];
   }
 
   ngOnInit() {
     this._ws.connect();
-    this._ws.onColumnAdd.subscribe(column => {
-      console.log('adding column from server');
-      this.board.columns.push(column);
-      this.updateBoardWidth();
-    });
 
     this._ws.onCardAdd.subscribe(card => {
       console.log('adding card from server');
@@ -90,9 +86,9 @@ export class TrelloBoardComponent implements OnInit {
         stop: function (event, ui) {
           var columnId = ui.item.find('.column').attr('column-id');
 
-          component.updateColumnOrder({
-            columnId: columnId
-          });
+          // component.updateColumnOrder({
+          //   columnId: columnId
+          // });
         }
       }).disableSelection();
 
@@ -166,53 +162,53 @@ export class TrelloBoardComponent implements OnInit {
     setTimeout(function () { input.focus(); }, 0);
   }
 
-  updateColumnElements(column: Column) {
-    let columnArr = jQuery('#main .column');
-    let columnEl = jQuery('#main .column[columnid=' + column._id + ']');
-    let i = 0;
-    for (; i < columnArr.length - 1; i++) {
-      column.order < +columnArr[i].getAttibute('column-order');
-      break;
-    }
+  // updateColumnElements(column: Column) {
+  //   let columnArr = jQuery('#main .column');
+  //   let columnEl = jQuery('#main .column[columnid=' + column._id + ']');
+  //   let i = 0;
+  //   for (; i < columnArr.length - 1; i++) {
+  //     column.order < +columnArr[i].getAttibute('column-order');
+  //     break;
+  //   }
 
-    columnEl.remove().insertBefore(columnArr[i]);
-  }
+  //   columnEl.remove().insertBefore(columnArr[i]);
+  // }
 
-  updateColumnOrder(event) {
-    let i: number = 0,
-      elBefore: number = -1,
-      elAfter: number = -1,
-      newOrder: number = 0,
-      columnEl = jQuery('#main'),
-      columnArr = columnEl.find('.column');
+  // updateColumnOrder(event) {
+  //   let i: number = 0,
+  //     elBefore: number = -1,
+  //     elAfter: number = -1,
+  //     newOrder: number = 0,
+  //     columnEl = jQuery('#main'),
+  //     columnArr = columnEl.find('.column');
 
-    for (i = 0; i < columnArr.length - 1; i++) {
-      if (columnEl.find('.column')[i].getAttribute('column-id') == event.columnId) {
-        break;
-      }
-    }
+  //   for (i = 0; i < columnArr.length - 1; i++) {
+  //     if (columnEl.find('.column')[i].getAttribute('column-id') == event.columnId) {
+  //       break;
+  //     }
+  //   }
 
-    if (i > 0 && i < columnArr.length - 1) {
-      elBefore = +columnArr[i - 1].getAttribute('column-order');
-      elAfter = +columnArr[i + 1].getAttribute('column-order');
+  //   if (i > 0 && i < columnArr.length - 1) {
+  //     elBefore = +columnArr[i - 1].getAttribute('column-order');
+  //     elAfter = +columnArr[i + 1].getAttribute('column-order');
 
-      newOrder = elBefore + ((elAfter - elBefore) / 2);
-    }
-    else if (i == columnArr.length - 1) {
-      elBefore = +columnArr[i - 1].getAttribute('column-order');
-      newOrder = elBefore + 1000;
-    } else if (i == 0) {
-      elAfter = +columnArr[i + 1].getAttribute('column-order');
+  //     newOrder = elBefore + ((elAfter - elBefore) / 2);
+  //   }
+  //   else if (i == columnArr.length - 1) {
+  //     elBefore = +columnArr[i - 1].getAttribute('column-order');
+  //     newOrder = elBefore + 1000;
+  //   } else if (i == 0) {
+  //     elAfter = +columnArr[i + 1].getAttribute('column-order');
 
-      newOrder = elAfter / 2;
-    }
+  //     newOrder = elAfter / 2;
+  //   }
 
-    let column = this.board.columns.filter(x => x._id === event.columnId)[0];
-    column.order = newOrder;
-    this._columnService.put(column).then(res => {
-      this._ws.updateColumn(this.board._id, column);
-    });
-  }
+  //   let column = this.board.columns.filter(x => x._id === event.columnId)[0];
+  //   column.order = newOrder;
+  //   this._columnService.put(column).then(res => {
+  //     this._ws.updateColumn(this.board._id, column);
+  //   });
+  // }
 
 
   blurOnEnter(event) {
@@ -221,54 +217,54 @@ export class TrelloBoardComponent implements OnInit {
     }
   }
 
-  enableAddColumn() {
-    this.addingColumn = true;
-    let input = jQuery('.add-column')[0]
-      .getElementsByTagName('input')[0];
+  // enableAddColumn() {
+  //   this.addingColumn = true;
+  //   let input = jQuery('.add-column')[0]
+  //     .getElementsByTagName('input')[0];
 
-    setTimeout(function () { input.focus(); }, 0);
-  }
+  //   setTimeout(function () { input.focus(); }, 0);
+  // }
 
-  addColumn() {
-    let newColumn = <Column>{
-      title: this.addColumnText,
-      order: (this.board.columns.length + 1) * 1000,
-      boardId: this.board._id
-    };
-    this._columnService.post(newColumn)
-      .subscribe(column => {
-        // this.board.columns.push(column)
-        console.log('column added');
-        this.updateBoardWidth();
-        this.addColumnText = '';
-        // this._ws.addColumn(this.board._id, column);
-      });
-  }
+  // addColumn() {
+  //   let newColumn = <Column>{
+  //     title: this.addColumnText,
+  //     order: (this.board.columns.length + 1) * 1000,
+  //     boardId: this.board._id
+  //   };
+  //   this._columnService.post(newColumn)
+  //     .subscribe(column => {
+  //       // this.board.columns.push(column)
+  //       console.log('column added');
+  //       this.updateBoardWidth();
+  //       this.addColumnText = '';
+  //       // this._ws.addColumn(this.board._id, column);
+  //     });
+  // }
 
-  addColumnOnEnter(event: KeyboardEvent) {
-    if (event.keyCode === 13) {
-      if (this.addColumnText && this.addColumnText.trim() !== '') {
-        this.addColumn();
-      } else {
-        this.clearAddColumn();
-      }
-    }
-    else if (event.keyCode === 27) {
-      this.clearAddColumn();
-    }
-  }
+  // addColumnOnEnter(event: KeyboardEvent) {
+  //   if (event.keyCode === 13) {
+  //     if (this.addColumnText && this.addColumnText.trim() !== '') {
+  //       this.addColumn();
+  //     } else {
+  //       this.clearAddColumn();
+  //     }
+  //   }
+  //   else if (event.keyCode === 27) {
+  //     this.clearAddColumn();
+  //   }
+  // }
 
-  addColumnOnBlur() {
-    if (this.addColumnText && this.addColumnText.trim() !== '') {
-      this.addColumn();
-    }
-    this.clearAddColumn();
-  }
+  // addColumnOnBlur() {
+  //   if (this.addColumnText && this.addColumnText.trim() !== '') {
+  //     this.addColumn();
+  //   }
+  //   this.clearAddColumn();
+  // }
 
-  clearAddColumn() {
-    this.addingColumn = false;
-    this.addColumnText = '';
-  }
+  // clearAddColumn() {
+  //   this.addingColumn = false;
+  //   this.addColumnText = '';
+  // }
 
 
   addCard(card: Card) {

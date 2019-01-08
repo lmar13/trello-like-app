@@ -1,12 +1,19 @@
-<div *ngIf="board" class="board-title">
-    <span [style.display]="editingTilte ? 'none' : ''" (click)="editTitle()">{{ board?.title }}</span>
+<nb-card>
+    <nb-card-body>
 
-    <input
-      [style.display]="editingTilte ? '' : 'none' "
-      (keyup)="blurOnEnter($event)"
-      (blur)="updateBoard()"
-      [(ngModel)]="board.title" />
-  </div>
+    <nb-actions size="small">
+      <nb-action icon="nb-search"></nb-action>
+      <nb-action icon="nb-power-circled"></nb-action>
+      <nb-action icon="nb-person"></nb-action>
+      <nb-action icon="nb-home"></nb-action>
+      <nb-action icon="nb-gear" disabled></nb-action>
+      <nb-action>
+        Custom Action
+      </nb-action>
+    </nb-actions>
+
+  </nb-card-body>
+</nb-card>
 
   <section *ngIf="board" id="main" >
     <div *ngFor="let column of board.columns | orderBy : 'order'" class="sortable-column">

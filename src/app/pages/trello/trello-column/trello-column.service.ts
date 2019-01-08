@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Column } from '../../../@core/model';
 
 
 
@@ -28,21 +27,21 @@ export class TrelloColumnService {
       // .map(res => <Card[]>res.json().data);
   }
 
-  put(column: Column) {
-    return this._http
-      .put(this.apiUrl + '/' + column._id, JSON.stringify(column))
-      .toPromise();
-  }
+  // put(column: Column) {
+  //   return this._http
+  //     .put(this.apiUrl + '/' + column._id, JSON.stringify(column))
+  //     .toPromise();
+  // }
 
-  post(column: Column) {;
-    return this._http.post(this.apiUrl, JSON.stringify(column))
-      // .map(res => <Column>res.json().data);
-  }
+  // post(column: Column) {;
+  //   return this._http.post(this.apiUrl, JSON.stringify(column))
+  //     // .map(res => <Column>res.json().data);
+  // }
 
-  delete(column: Column) {
-    return this._http.delete(this.apiUrl + '/' + column._id)
-      .toPromise();
+  // delete(column: Column) {
+  //   return this._http.delete(this.apiUrl + '/' + column._id)
+  //     .toPromise();
 
-  }
+  // }
 
 }
