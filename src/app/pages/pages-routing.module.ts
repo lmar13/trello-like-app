@@ -17,17 +17,7 @@ const routes: Routes = [{
     },
     {
       path: 'trello',
-      component: TrelloComponent,
-      children: [
-        {
-          path: '',
-          component: TrelloListComponent,
-        },
-        {
-          path: 'board',
-          component: TrelloBoardComponent,
-        },
-      ]
+      loadChildren: './trello/trello.module#TrelloModule'
     },
     {
       path: '',

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SmartTableService } from '../../../@core/data/smart-table.service';
 
 @Component({
   selector: 'trello-board',
@@ -7,7 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TrelloBoardComponent implements OnInit {
 
-  constructor() { }
+  boardId = null;
+  constructor(private smartTableService: SmartTableService) {
+    this.smartTableService.selectedBoard.subscribe(id => this.boardId = id);
+  }
 
   ngOnInit() {
   }

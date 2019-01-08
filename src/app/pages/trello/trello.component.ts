@@ -4,22 +4,31 @@ import { NbMenuItem } from '@nebular/theme';
 
 export const subMenu: NbMenuItem[] = [
   {
-    title: 'Project List',
+    title: 'All projects',
     link: '/pages/trello',
   },
   {
-    title: 'Project Board',
-    link: '/pages/trello/board'
+    title: 'My projects',
+    link: '/pages/trello/1',  // change to correct value
   },
   {
-    title: 'Something'
+    title: 'Project board',
+    link: '/pages/trello/board'
   }
 ];
 
 @Component({
   selector: 'trello',
-  templateUrl: './trello.component.html',
-  styleUrls: ['./trello.component.scss']
+  template: `
+    <div class="row">
+      <nb-card>
+        <nb-card-header>Trello</nb-card-header>
+        <nb-card-body>
+          <router-outlet></router-outlet>
+        </nb-card-body>
+      </nb-card>
+    </div>
+  `
 })
 export class TrelloComponent implements OnInit, OnDestroy {
   layouts = []
