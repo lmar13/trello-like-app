@@ -21,22 +21,10 @@ module.exports = function(server, origins) {
             socket.leave(boardId);
         });
 
-        socket.on('addColumn', function(data) {
-            log('addColumn: ', data);
-            socket.broadcast.to(data.boardId)
-                .emit("addColumn", data);
-        });
-
         socket.on('addCard', function(data) {
             log('addCard: ', data);
             socket.broadcast.to(data.boardId)
                 .emit("addCard", data);
-        });
-
-        socket.on('updateColumn', function(data) {
-            log('updateColumn: ', data);
-            socket.broadcast.to(data.boardId)
-                .emit("updateColumn", data);
         });
 
         socket.on('updateCard', function(data) {

@@ -1,5 +1,8 @@
 import {Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Column } from '../../../@core/model';
+import { EnvironmentProviderService } from '../../../@core/data/environment-provider.service';
 
 
 
@@ -7,41 +10,36 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class TrelloColumnService {
-  apiUrl = '/column';
+  private baseUrl: string;
 
-  constructor(private _http: HttpClient) {
+  constructor(
+    private httpClient: HttpClient,
+    envProvider: EnvironmentProviderService) {
+      this.baseUrl = envProvider.current.apiBaseUri;
   }
 
-  getAll() {
-    return this._http.get(this.apiUrl)
-      // .map(res => <Column[]>res.json().data);
-  }
-
-  get(id: string) {
-    return this._http.get(this.apiUrl + '/' + id)
-      // .map(res => <Column>res.json().data);
-  }
-
-  getCards(id: string) {
-    return this._http.get(this.apiUrl + '/' + id + '/cards')
-      // .map(res => <Card[]>res.json().data);
-  }
-
-  // put(column: Column) {
-  //   return this._http
-  //     .put(this.apiUrl + '/' + column._id, JSON.stringify(column))
-  //     .toPromise();
+  // getAll() {
+  //   return this._http.get(this.apiUrl)
+  //     // .map(res => <Column[]>res.json().data);
   // }
 
-  // post(column: Column) {;
-  //   return this._http.post(this.apiUrl, JSON.stringify(column))
+  // get(id: string) {
+  //   return this._http.get(this.apiUrl + '/' + id)
   //     // .map(res => <Column>res.json().data);
   // }
 
-  // delete(column: Column) {
-  //   return this._http.delete(this.apiUrl + '/' + column._id)
-  //     .toPromise();
-
+  // getCards(id: string) {
+  //   return this._http.get(this.apiUrl + '/' + id + '/cards')
+  //     // .map(res => <Card[]>res.json().data);
   // }
+
+  getAll(): Observable<Column[]> {
+    return this.httpClient.get<Column[]>(`${this.baseUrl}/column`)
+    // return this.httpClient.get<Column[]>(`./../../../../assets/data/columns.json`)
+  }
+
+  getColumnById(id: string): Observable<Column> {
+    return this.httpClient.get<Column>(`${this.baseUrl}/column/${id}`)
+  }
 
 }

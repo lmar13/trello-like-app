@@ -1,40 +1,59 @@
+import { Observable } from 'rxjs/Rx';
 import {Injectable} from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Card } from '../../../@core/model';
+import { EnvironmentProviderService } from '../../../@core/data/environment-provider.service';
+import { catchError, map } from 'rxjs/operators';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class TrelloCardService {
-  apiUrl = '/card';
+  private baseUrl: string;
 
-  constructor(private _http: HttpClient) {
+  constructor(
+    private httpClient: HttpClient,
+    envProvider: EnvironmentProviderService) {
+      this.baseUrl = envProvider.current.apiBaseUri;
   }
 
-  getAll() {
-    return this._http.get(this.apiUrl)
-      // .map(res => res.json());
+  getAll(): Observable<Card[]> {
+    return this.httpClient
+        .get<Card[]>(`${this.baseUrl}/card`)
   }
 
-  get(id: string) {
-    return this._http.get(this.apiUrl + '/' + id)
-      // .map(res => res.json());
+  getById(id: string): Observable<Card> {
+    return this.httpClient
+        .get<Card>(`${this.baseUrl}/card/${id}`)
   }
 
-  put(card: Card) {
-    return this._http.put(this.apiUrl + '/' + card._id, JSON.stringify(card))
-      .toPromise();
+  edit(card: Card): Observable<Card> {
+    return this.httpClient.put<Card>(`${this.baseUrl}/card/${card._id}`, card)
+      .pipe(
+        catchError(err => {
+          throw err;
+        }),
+        map(value => value as Card)
+      );
   }
 
-  post(card: Card) {
-    return this._http.post(this.apiUrl, JSON.stringify(card))
-      // .map(res => <Card>res.json().data);
+  add(card: Card): Observable<Card> {
+    return this.httpClient.post<Card>(`${this.baseUrl}/card`, card)
+      .pipe(
+        catchError(err => {
+          throw err;
+        }),
+        map(value => value as Card)
+      );
   }
 
-  delete(card: Card) {
-    return this._http.delete(this.apiUrl + '/' + card._id)
-      .toPromise();
+  delete(id: string): Observable<boolean> {
+    return this.httpClient.delete(`${this.baseUrl}/card/${id}`, {
+      observe: 'response'
+    }).pipe(
+      map
+      ((response: HttpResponse<Object>) => response.ok)
+    );
   }
-
 }

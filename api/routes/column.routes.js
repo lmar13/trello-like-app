@@ -5,17 +5,6 @@ var log = require('../../dev-logger.js');
 
 module.exports = function(app) {
     log('starting column routes');
-    /* Create */
-    app.post('/column', function (req, res) {
-        log('POST /column');
-        var newColumn = new Column(req.body);
-        newColumn.save(function(err, newColumn) {
-            if (err) {
-                res.json({info: 'error during column create', error: err});
-            };
-            res.json({info: 'column created successfully', data: newColumn});
-        });
-    });
 
     /* Read */
     app.get('/column', function (req, res) {
@@ -24,7 +13,8 @@ module.exports = function(app) {
             if (err) {
                 res.json({info: 'error during find columns', error: err});
             };
-            res.json({info: 'columns found successfully', data: columns});
+            // res.json({info: 'columns found successfully', data: columns});
+            res.json(columns);
         });
     });
 
@@ -35,14 +25,15 @@ module.exports = function(app) {
                 res.json({info: 'error during find column', error: err});
             };
             if (column) {
-                res.json({info: 'column found successfully', data: column});
+                // res.json({info: 'column found successfully', data: column});
+                res.json(columns);
             } else {
                 res.json({info: 'column not found'});
             }
         });
     });
 
-
+    // Read card for specific board and sign it to correct columns
     app.get('/column/:id/cards', function (req, res) {
         log('GET /column/:id');
         Column.findById(req.params.id, function(err, column) {
@@ -56,39 +47,6 @@ module.exports = function(app) {
             } else {
                 res.json({info: 'column not found'});
             }
-        });
-    });
-
-    /* Update */
-    app.put('/column/:id', function (req, res) {
-        log('PUT /column/:id');
-        Column.findById(req.params.id, function(err, column) {
-            if (err) {
-                res.json({info: 'error during find column', error: err});
-            };
-            if (column) {
-                _.merge(column, req.body);
-                column.save(function(err) {
-                    if (err) {
-                        res.json({info: 'error during column update', error: err});
-                    };
-                    res.json({info: 'column updated successfully'});
-                });
-            } else {
-                res.json({info: 'column not found'});
-            }
-
-        });
-    });
-
-    /* Delete */
-    app.delete('/column/:id', function (req, res) {
-        log('DELETE /column/:id');
-        Column.findByIdAndRemove(req.params.id, function(err) {
-            if (err) {
-                res.json({info: 'error during remove column', error: err});
-            };
-            res.json({info: 'column removed successfully'});
         });
     });
 };

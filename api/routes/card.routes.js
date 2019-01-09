@@ -12,7 +12,8 @@ module.exports = function(app) {
             if (err) {
                 res.json({info: 'error during card create', error: err});
             };
-            res.json({info: 'card created successfully', data: newCard});
+            // res.json({info: 'card created successfully', data: newCard});
+            res.json(newCard);
         });
     });
 
@@ -23,7 +24,8 @@ module.exports = function(app) {
             if (err) {
                 res.json({info: 'error during find cards', error: err});
             };
-            res.json({info: 'cards found successfully', data: cards});
+            // res.json({info: 'cards found successfully', data: cards});
+            res.json(cards);
         });
     });
 
@@ -34,7 +36,8 @@ module.exports = function(app) {
                 res.json({info: 'error during find card', error: err});
             };
             if (card) {
-                res.json({info: 'card found successfully', data: card});
+                // res.json({info: 'card found successfully', data: card});
+                res.json(card);
             } else {
                 res.json({info: 'card not found'});
             }
