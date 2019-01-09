@@ -1,15 +1,6 @@
-<div class="column"
-    [attr.column-id]="column._id"
-    [attr.column-order]="column.order">
+<div class="column" [attr.column-id]="column._id">
     <div class="column-header">
-        <h4 [innerHtml]="column.title"
-            [style.display]="editingColumn ?'none' : '' "
-            (click)="editColumn()" ></h4>
-        <input
-            [style.display]="editingColumn ?'' : 'none' "
-            (blur)="updateColumnOnBlur()"
-            (keyup)="addColumnOnEnter($event)"
-            [(ngModel)]="column.title" />
+        <h4 [innerHtml]="column.title"></h4>
     </div>
     <ul class="card-list" [attr.column-id]="column._id">
         <li *ngFor="let card of cards | where : { columnId: column._id } | orderBy : 'order'">

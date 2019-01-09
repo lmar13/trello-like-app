@@ -1,62 +1,72 @@
 import {Injectable} from '@angular/core';
 import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs/Rx';
-import { Board } from '../../../@core/model';
-import { HttpClient } from '@angular/common/http';
+import { Board, Column, Card } from '../../../@core/model';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { EnvironmentProviderService } from '../../../@core/data/environment-provider.service';
+import { catchError, map } from 'rxjs/operators';
+import { TrelloColumnService } from '../trello-column/trello-column.service';
+import { TrelloCardService } from '../trello-card/trello-card.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TrelloBoardService {
-  apiUrl = '/board';
   boardsCache: Board[] = [];
+  private baseUrl: string;
 
-  constructor(private _http: HttpClient) {
+  constructor(
+    private httpClient: HttpClient,
+    envProvider: EnvironmentProviderService,
+    private columnService: TrelloColumnService,
+    private cardService: TrelloCardService
+  ) {
+    this.baseUrl = envProvider.current.apiBaseUri;
   }
 
-  getAll() {
-    return this._http.get(this.apiUrl)
-      // .map((res: Response) => <Board[]>res.json().data)
+  getAll(): Observable<Board[]> {
+    return this.httpClient.get<Board[]>(`${this.baseUrl}/board`)
   }
 
-  get(id: string) {
-    return this._http.get(this.apiUrl + '/' + id)
-      // .map((res: Response) => <Board>res.json().data);
+  getById(id: string): Observable<Board> {
+    return this.httpClient.get<Board>(`${this.baseUrl}/board/${id}`)
   }
 
-  getBoardWithColumnsAndCards(id: string){
-    return Observable.forkJoin(this.get(id), this.getColumns(id), this.getCards(id));
+  getBoardWithColumnsAndCards(id: string): Observable<any> {
+    return Observable.forkJoin(
+      this.getById(id),
+      this.columnService.getById(id),
+      this.cardService.getById(id)
+    );
   }
 
-  getColumns(id: string) {
-    return this._http.get(this.apiUrl + '/' + id + '/columns')
-      // .map((res: Response) => <Column[]>res.json().data);
+  edit(board: Board): Observable<Board> {
+    return this.httpClient.put<Board>(`${this.baseUrl}/board/${board._id}`, board)
+      .pipe(
+        catchError(err => {
+          throw err;
+        }),
+        map(value => value as Board)
+      );
   }
 
-  getCards(id: string) {
-    return this._http.get(this.apiUrl + '/' + id + '/cards')
-      // .map((res: Response) => <Card[]>res.json().data);
+  add(board: Board): Observable<Board> {
+    return this.httpClient.post<Board>(`${this.baseUrl}/board`, board)
+      .pipe(
+        catchError(err => {
+          throw err;
+        }),
+        map(value => value as Board)
+      );
   }
 
-  put(board: Board) {
-    let body = JSON.stringify(board);
-    console.log(body);
-    this._http.put(this.apiUrl + '/' + board._id, body)
-      .toPromise()
-      // .then(res => console.log(res.json()));
-  }
-
-  post(board: Board) {
-    let body = JSON.stringify(board);
-
-    return this._http.post(this.apiUrl, body)
-      .map((res: Response) => <Board>res.json().data);
-  }
-
-  delete(board: Board) {
-    this._http.delete(this.apiUrl + '/' + board._id)
-      .toPromise()
-      // .then(res => console.log(res.json()));
+  delete(id: string): Observable<boolean> {
+    return this.httpClient.delete(`${this.baseUrl}/board/${id}`, {
+      observe: 'response'
+    }).pipe(
+      map
+      ((response: HttpResponse<Object>) => response.ok)
+    );
   }
 
 }

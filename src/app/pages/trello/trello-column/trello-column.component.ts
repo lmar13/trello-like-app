@@ -1,10 +1,11 @@
+import { jQuery } from 'jquery';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Card} from '../../../@core/model';
+import { Card, Column} from '../../../@core/model';
 import { WebSocketService } from '../../../@core/data/ws.service';
 import { TrelloColumnService } from './trello-column.service';
 import { TrelloCardService } from '../trello-card/trello-card.service';
 
-declare var jQuery: any;
+// declare var jQuery: any;
 
 @Component({
   selector: 'ngx-trello-column',
@@ -12,7 +13,7 @@ declare var jQuery: any;
   styleUrls: ['./trello-column.component.scss'],
 })
 export class TrelloColumnComponent implements OnInit {
-  @Input() column: string;
+  @Input() column: Column;
   @Input() cards: Card[];
   @Output() public onAddCard: EventEmitter<Card>;
   @Output() cardUpdate: EventEmitter<Card>;
@@ -23,9 +24,8 @@ export class TrelloColumnComponent implements OnInit {
   currentTitle: string;
 
   constructor(private el: ElementRef,
-    private _ws: WebSocketService,
-    private _columnService: TrelloColumnService,
-    private _cardService: TrelloCardService) {
+    private ws: WebSocketService,
+    private cardService: TrelloCardService) {
     this.onAddCard = new EventEmitter();
     this.cardUpdate = new EventEmitter();
   }
@@ -103,9 +103,9 @@ export class TrelloColumnComponent implements OnInit {
     let oldColumnId = card.columnId;
     card.order = newOrder;
     card.columnId = event.columnId;
-    this._cardService.put(card).then(res => {
-      // this._ws.updateCard(this.column.boardId, card); //to check how t reproduce
-    });
+    // this.cardService.edit(card).then(res => {
+    //   // this._ws.updateCard(this.column.boardId, card); //to check how t reproduce
+    // });
   }
 
   blurOnEnter(event) {
@@ -130,10 +130,10 @@ export class TrelloColumnComponent implements OnInit {
       // columnId: this.column._id,
       // boardId: this.column.boardId
     };
-    this._cardService.post(newCard)
+    this.cardService.add(newCard)
       .subscribe(card => {
-        // this.onAddCard.emit(card);
-        // this._ws.addCard(card.boardId, card);
+        this.onAddCard.emit(card);
+        this.ws.addCard(card.boardId, card);
       });
   }
 
@@ -150,32 +150,6 @@ export class TrelloColumnComponent implements OnInit {
     }
   }
 
-  // updateColumn() {
-  //   if (this.column.title && this.column.title.trim() !== '') {
-  //     this._columnService.put(this.column).then(res => {
-  //       this._ws.updateColumn(this.column.boardId, this.column);
-  //     });
-  //     this.editingColumn = false;
-  //   } else {
-  //     this.cleadAddColumn();
-  //   }
-  // }
-
-  // cleadAddColumn() {
-  //   this.column.title = this.currentTitle;
-  //   this.editingColumn = false;
-  // }
-
-  // editColumn() {
-  //   this.currentTitle = this.column.title;
-  //   this.editingColumn = true;
-  //   let input = this.el.nativeElement
-  //     .getElementsByClassName('column-header')[0]
-  //     .getElementsByTagName('input')[0];
-
-  //   setTimeout(function() { input.focus(); }, 0);
-  // }
-
   enableAddCard() {
     this.addingCard = true;
     let input = this.el.nativeElement
@@ -184,15 +158,6 @@ export class TrelloColumnComponent implements OnInit {
 
     setTimeout(function() { input.focus(); }, 0);
   }
-
-
-  // updateColumnOnBlur() {
-  //   if (this.editingColumn) {
-  //     this.updateColumn();
-  //     this.clearAddCard();
-  //   }
-  // }
-
 
   addCardOnBlur() {
     if (this.addingCard) {

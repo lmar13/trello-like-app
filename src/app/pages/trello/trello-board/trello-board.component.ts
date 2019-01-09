@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import jQuery from 'jquery';
 import { SmartTableService } from '../../../@core/data/smart-table.service';
 import { WebSocketService } from '../../../@core/data/ws.service';
-import { Board, Card} from '../../../@core/model';
+import { Board, Card, Column} from '../../../@core/model';
 import { TrelloColumnService } from '../trello-column/trello-column.service';
 import { TrelloBoardService } from './trello-board.service';
 
@@ -19,6 +19,7 @@ var curYPos = 0,
 export class TrelloBoardComponent implements OnInit {
 
   board = {} as Board;
+  columns = [] as Column[];
   addingColumn = false;
   addColumnText: string;
   editingTilte = false;
@@ -29,31 +30,31 @@ export class TrelloBoardComponent implements OnInit {
   constructor(
     private smartTableService: SmartTableService,
     public el: ElementRef,
-    private _ws: WebSocketService,
-    private _boardService: TrelloBoardService,
-    private _columnService: TrelloColumnService,
-    private _route: ActivatedRoute
+    private ws: WebSocketService,
+    private boardService: TrelloBoardService,
+    private columnService: TrelloColumnService,
+    private route: ActivatedRoute
 
   ) {
     this.smartTableService.selectedBoard.subscribe(id => this.board._id = id);
-    this.board.columns = ['Planing', 'Development', 'Testing', 'Ready to archive'];
+    this.columnService.getAll().subscribe(columns => this.columns = columns);
   }
 
   ngOnInit() {
-    this._ws.connect();
+    this.ws.connect();
 
-    this._ws.onCardAdd.subscribe(card => {
+    this.ws.onCardAdd.subscribe(card => {
       console.log('adding card from server');
       this.board.cards.push(card);
     });
 
-    let boardId = this._route.snapshot.params['id'];
+    let boardId = this.route.snapshot.params['id'];
 
-    //let boardId = this._routeParams.get('id');
-    this._boardService.getBoardWithColumnsAndCards(boardId)
+    //let boardId = this.routeParams.get('id');
+    this.boardService.getBoardWithColumnsAndCards(boardId)
       .subscribe(data => {
         console.log(`joining board ${boardId}`);
-        this._ws.join(boardId);
+        this.ws.join(boardId);
 
         // this.board = data[0];
         // this.board.columns = data[1];
@@ -65,32 +66,32 @@ export class TrelloBoardComponent implements OnInit {
 
   ngOnDestroy(){
     // console.log(`leaving board ${this.board._id}`);
-    // this._ws.leave(this.board._id);
+    // this.ws.leave(this.board.id);
   }
 
   setupView() {
     let component = this;
     setTimeout(function () {
       var startColumn;
-      jQuery('#main').sortable({
-        items: '.sortable-column',
-        handler: '.header',
-        connectWith: "#main",
-        placeholder: "column-placeholder",
-        dropOnEmpty: true,
-        tolerance: 'pointer',
-        start: function (event, ui) {
-          ui.placeholder.height(ui.item.find('.column').outerHeight());
-          startColumn = ui.item.parent();
-        },
-        stop: function (event, ui) {
-          var columnId = ui.item.find('.column').attr('column-id');
+      // jQuery('#main').sortable({
+      //   items: '.sortable-column',
+      //   handler: '.header',
+      //   connectWith: "#main",
+      //   placeholder: "column-placeholder",
+      //   dropOnEmpty: true,
+      //   tolerance: 'pointer',
+      //   start: function (event, ui) {
+      //     ui.placeholder.height(ui.item.find('.column').outerHeight());
+      //     startColumn = ui.item.parent();
+      //   },
+      //   stop: function (event, ui) {
+      //     var columnId = ui.item.find('.column').attr('column-id');
 
-          // component.updateColumnOrder({
-          //   columnId: columnId
-          // });
-        }
-      }).disableSelection();
+      //     // component.updateColumnOrder({
+      //     //   columnId: columnId
+      //     // });
+      //   }
+      // }).disableSelection();
 
       //component.bindPane();;
 
@@ -125,7 +126,7 @@ export class TrelloBoardComponent implements OnInit {
 
   updateBoardWidth() {
     // this.boardWidth = ((this.board.columns.length + (this.columnsAdded > 0 ? 1 : 2)) * 280) + 10;
-    this.boardWidth = ((this.board.columns.length + 1) * 280) + 10;
+    this.boardWidth = ((this.columns.length + 1) * 280) + 10;
 
     if (this.boardWidth > document.body.scrollWidth) {
       document.getElementById('main').style.width = this.boardWidth + 'px';
@@ -143,7 +144,7 @@ export class TrelloBoardComponent implements OnInit {
 
   updateBoard() {
     if (this.board.title && this.board.title.trim() !== '') {
-      this._boardService.put(this.board);
+      this.boardService.edit(this.board);
     } else {
       this.board.title = this.currentTitle;
     }
@@ -205,8 +206,8 @@ export class TrelloBoardComponent implements OnInit {
 
   //   let column = this.board.columns.filter(x => x._id === event.columnId)[0];
   //   column.order = newOrder;
-  //   this._columnService.put(column).then(res => {
-  //     this._ws.updateColumn(this.board._id, column);
+  //   this.columnService.put(column).then(res => {
+  //     this.ws.updateColumn(this.board._id, column);
   //   });
   // }
 
@@ -231,13 +232,13 @@ export class TrelloBoardComponent implements OnInit {
   //     order: (this.board.columns.length + 1) * 1000,
   //     boardId: this.board._id
   //   };
-  //   this._columnService.post(newColumn)
+  //   this.columnService.post(newColumn)
   //     .subscribe(column => {
   //       // this.board.columns.push(column)
   //       console.log('column added');
   //       this.updateBoardWidth();
   //       this.addColumnText = '';
-  //       // this._ws.addColumn(this.board._id, column);
+  //       // this.ws.addColumn(this.board._id, column);
   //     });
   // }
 

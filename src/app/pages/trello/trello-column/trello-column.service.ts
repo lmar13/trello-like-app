@@ -38,7 +38,7 @@ export class TrelloColumnService {
     // return this.httpClient.get<Column[]>(`./../../../../assets/data/columns.json`)
   }
 
-  getColumnById(id: string): Observable<Column> {
+  getById(id: string): Observable<Column> {
     return this.httpClient.get<Column>(`${this.baseUrl}/column/${id}`)
   }
 
