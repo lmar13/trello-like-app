@@ -3,5 +3,4 @@ export class Card {
   title: string;
   columnId: string;
   boardId: string;
-  order: number;
 }
