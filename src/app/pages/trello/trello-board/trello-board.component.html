@@ -18,7 +18,9 @@
 <div class="container-fluid">
   <div class="row" *ngIf="board">
     <div *ngFor="let column of columns" class="sortable-column col-3">
-      <ngx-trello-column [column]="column"
+      <ngx-trello-column
+          [column]="column"
+          [board]="board"
           (onAddCard)="addCard($event)"
           [cards]="board.cards">
       </ngx-trello-column>

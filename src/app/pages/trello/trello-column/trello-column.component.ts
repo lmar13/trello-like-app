@@ -1,6 +1,6 @@
 import { jQuery } from 'jquery';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Card, Column} from '../../../@core/model';
+import { Card, Column, Board} from '../../../@core/model';
 import { WebSocketService } from '../../../@core/data/ws.service';
 import { TrelloColumnService } from './trello-column.service';
 import { TrelloCardService } from '../trello-card/trello-card.service';
@@ -14,7 +14,9 @@ import { TrelloCardService } from '../trello-card/trello-card.service';
 })
 export class TrelloColumnComponent implements OnInit {
   @Input() column: Column;
+  @Input() board: Board;
   @Input() cards: Card[];
+
   @Output() public onAddCard: EventEmitter<Card>;
   @Output() cardUpdate: EventEmitter<Card>;
 
@@ -103,9 +105,9 @@ export class TrelloColumnComponent implements OnInit {
     let oldColumnId = card.columnId;
     card.order = newOrder;
     card.columnId = event.columnId;
-    // this.cardService.edit(card).then(res => {
-    //   // this._ws.updateCard(this.column.boardId, card); //to check how t reproduce
-    // });
+    this.cardService.edit(card).subscribe(res => {
+      this.ws.updateCard(this.board._id, card);
+    })
   }
 
   blurOnEnter(event) {
@@ -114,21 +116,14 @@ export class TrelloColumnComponent implements OnInit {
     }
   }
 
-  // addColumnOnEnter(event: KeyboardEvent) {
-  //   if (event.keyCode === 13) {
-  //     this.updateColumn();
-  //   } else if (event.keyCode === 27) {
-  //     this.cleadAddColumn();
-  //   }
-  // }
-
   addCard() {
     this.cards = this.cards || [];
     let newCard = <Card>{
       title: this.addCardText,
       order: (this.cards.length + 1) * 1000,
-      // columnId: this.column._id,
-      // boardId: this.column.boardId
+      content: '',
+      columnId: this.column._id,
+      boardId: this.board._id
     };
     this.cardService.add(newCard)
       .subscribe(card => {

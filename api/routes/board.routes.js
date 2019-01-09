@@ -14,7 +14,8 @@ module.exports = function(app) {
             if (err) {
                 res.json({info: 'error during board create', error: err});
             };
-            res.json({info: 'board created successfully', data: newBoard});
+            // res.json({info: 'board created successfully', data: newBoard});
+            res.json(newBoard);
         });
     });
 
@@ -25,7 +26,8 @@ module.exports = function(app) {
             if (err) {
                 res.json({info: 'error during find boards', error: err});
             };
-            res.json({info: 'boards found successfully', data: boards});
+            // res.json({info: 'boards found successfully', data: boards});
+            res.json(boards);
         });
     });
 
@@ -37,28 +39,29 @@ module.exports = function(app) {
                 res.json({info: 'error during find board', error: err});
             };
             if (board) {
-                res.json({info: 'board found successfully', data: board});    
+                // res.json({info: 'board found successfully', data: board});
+                res.json(board);
             } else {
                 res.json({info: 'board not found'});
             }
         });
     });
 
-    app.get('/board/:id/columns', function (req, res) {
-        log('GET /board/:id');
-        Board.findById(req.params.id, function(err, board) {
-            if (err) {
-                res.json({info: 'error during find board', error: err});
-            };
-            if (board) {
-                Column.find({boardId: req.params.id}).sort({order: 1}).exec({ boardId: req.params.id }, function (err, columns) {
-                    res.json({info: 'Columns found successfully', data: columns});    
-                })
-            } else {
-                res.json({info: 'board not found'});
-            }
-        });
-    });
+    // app.get('/board/:id/columns', function (req, res) {
+    //     log('GET /board/:id');
+    //     Board.findById(req.params.id, function(err, board) {
+    //         if (err) {
+    //             res.json({info: 'error during find board', error: err});
+    //         };
+    //         if (board) {
+    //             Column.find({boardId: req.params.id}).sort({order: 1}).exec({ boardId: req.params.id }, function (err, columns) {
+    //                 res.json({info: 'Columns found successfully', data: columns});
+    //             })
+    //         } else {
+    //             res.json({info: 'board not found'});
+    //         }
+    //     });
+    // });
 
     app.get('/board/:id/cards', function (req, res) {
         log('GET /column/:id');
@@ -68,7 +71,8 @@ module.exports = function(app) {
             };
             if (board) {
                 Card.find({ boardId: req.params.id }).sort({order: 1}).exec(function (err, cards){
-                    res.json({info: 'Cards found successfully', data: cards});
+                    // res.json({info: 'Cards found successfully', data: cards});
+                    res.json(cards);
                 });
             } else {
                 res.json({info: 'board not found'});

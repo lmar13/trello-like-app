@@ -163,110 +163,11 @@ export class TrelloBoardComponent implements OnInit {
     setTimeout(function () { input.focus(); }, 0);
   }
 
-  // updateColumnElements(column: Column) {
-  //   let columnArr = jQuery('#main .column');
-  //   let columnEl = jQuery('#main .column[columnid=' + column._id + ']');
-  //   let i = 0;
-  //   for (; i < columnArr.length - 1; i++) {
-  //     column.order < +columnArr[i].getAttibute('column-order');
-  //     break;
-  //   }
-
-  //   columnEl.remove().insertBefore(columnArr[i]);
-  // }
-
-  // updateColumnOrder(event) {
-  //   let i: number = 0,
-  //     elBefore: number = -1,
-  //     elAfter: number = -1,
-  //     newOrder: number = 0,
-  //     columnEl = jQuery('#main'),
-  //     columnArr = columnEl.find('.column');
-
-  //   for (i = 0; i < columnArr.length - 1; i++) {
-  //     if (columnEl.find('.column')[i].getAttribute('column-id') == event.columnId) {
-  //       break;
-  //     }
-  //   }
-
-  //   if (i > 0 && i < columnArr.length - 1) {
-  //     elBefore = +columnArr[i - 1].getAttribute('column-order');
-  //     elAfter = +columnArr[i + 1].getAttribute('column-order');
-
-  //     newOrder = elBefore + ((elAfter - elBefore) / 2);
-  //   }
-  //   else if (i == columnArr.length - 1) {
-  //     elBefore = +columnArr[i - 1].getAttribute('column-order');
-  //     newOrder = elBefore + 1000;
-  //   } else if (i == 0) {
-  //     elAfter = +columnArr[i + 1].getAttribute('column-order');
-
-  //     newOrder = elAfter / 2;
-  //   }
-
-  //   let column = this.board.columns.filter(x => x._id === event.columnId)[0];
-  //   column.order = newOrder;
-  //   this.columnService.put(column).then(res => {
-  //     this.ws.updateColumn(this.board._id, column);
-  //   });
-  // }
-
-
   blurOnEnter(event) {
     if (event.keyCode === 13) {
       event.target.blur();
     }
   }
-
-  // enableAddColumn() {
-  //   this.addingColumn = true;
-  //   let input = jQuery('.add-column')[0]
-  //     .getElementsByTagName('input')[0];
-
-  //   setTimeout(function () { input.focus(); }, 0);
-  // }
-
-  // addColumn() {
-  //   let newColumn = <Column>{
-  //     title: this.addColumnText,
-  //     order: (this.board.columns.length + 1) * 1000,
-  //     boardId: this.board._id
-  //   };
-  //   this.columnService.post(newColumn)
-  //     .subscribe(column => {
-  //       // this.board.columns.push(column)
-  //       console.log('column added');
-  //       this.updateBoardWidth();
-  //       this.addColumnText = '';
-  //       // this.ws.addColumn(this.board._id, column);
-  //     });
-  // }
-
-  // addColumnOnEnter(event: KeyboardEvent) {
-  //   if (event.keyCode === 13) {
-  //     if (this.addColumnText && this.addColumnText.trim() !== '') {
-  //       this.addColumn();
-  //     } else {
-  //       this.clearAddColumn();
-  //     }
-  //   }
-  //   else if (event.keyCode === 27) {
-  //     this.clearAddColumn();
-  //   }
-  // }
-
-  // addColumnOnBlur() {
-  //   if (this.addColumnText && this.addColumnText.trim() !== '') {
-  //     this.addColumn();
-  //   }
-  //   this.clearAddColumn();
-  // }
-
-  // clearAddColumn() {
-  //   this.addingColumn = false;
-  //   this.addColumnText = '';
-  // }
-
 
   addCard(card: Card) {
     this.board.cards.push(card);

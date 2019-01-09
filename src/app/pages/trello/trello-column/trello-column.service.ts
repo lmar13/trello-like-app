@@ -18,21 +18,6 @@ export class TrelloColumnService {
       this.baseUrl = envProvider.current.apiBaseUri;
   }
 
-  // getAll() {
-  //   return this._http.get(this.apiUrl)
-  //     // .map(res => <Column[]>res.json().data);
-  // }
-
-  // get(id: string) {
-  //   return this._http.get(this.apiUrl + '/' + id)
-  //     // .map(res => <Column>res.json().data);
-  // }
-
-  // getCards(id: string) {
-  //   return this._http.get(this.apiUrl + '/' + id + '/cards')
-  //     // .map(res => <Card[]>res.json().data);
-  // }
-
   getAll(): Observable<Column[]> {
     return this.httpClient.get<Column[]>(`${this.baseUrl}/column`)
     // return this.httpClient.get<Column[]>(`./../../../../assets/data/columns.json`)
