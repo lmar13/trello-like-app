@@ -20,9 +20,10 @@ export class TrelloBoardComponent implements OnInit {
 
   board = {} as Board;
   columns = [] as Column[];
+  cards = [] as Card[];
   addingColumn = false;
   addColumnText: string;
-  editingTilte = false;
+  editingTitle = false;
   currentTitle: string;
   boardWidth: number;
   columnsAdded: number = 0;
@@ -37,7 +38,8 @@ export class TrelloBoardComponent implements OnInit {
 
   ) {
     this.smartTableService.selectedBoard.subscribe(id => this.board._id = id);
-    this.columnService.getAll().subscribe(columns => this.columns = columns);
+    // this.columnService.getAll().subscribe(columns => this.columns = columns);
+
   }
 
   ngOnInit() {
@@ -45,10 +47,11 @@ export class TrelloBoardComponent implements OnInit {
 
     this.ws.onCardAdd.subscribe(card => {
       console.log('adding card from server');
-      this.board.cards.push(card);
+      this.cards.push(card);
     });
 
     let boardId = this.route.snapshot.params['id'];
+    boardId = '5c2f3beb5088023f44e874ae';
 
     //let boardId = this.routeParams.get('id');
     this.boardService.getBoardWithColumnsAndCards(boardId)
@@ -56,11 +59,12 @@ export class TrelloBoardComponent implements OnInit {
         console.log(`joining board ${boardId}`);
         this.ws.join(boardId);
 
-        // this.board = data[0];
-        // this.board.columns = data[1];
-        // this.board.cards = data[2];
+        console.log(data);
+
+        this.board = data[0];
+        this.columns = data[1];
+        this.cards = data[2];
         document.title = this.board.title + " | Generic Task Manager";
-        this.setupView();
       });
   }
 
@@ -69,38 +73,8 @@ export class TrelloBoardComponent implements OnInit {
     // this.ws.leave(this.board.id);
   }
 
-  setupView() {
-    let component = this;
-    setTimeout(function () {
-      var startColumn;
-      // jQuery('#main').sortable({
-      //   items: '.sortable-column',
-      //   handler: '.header',
-      //   connectWith: "#main",
-      //   placeholder: "column-placeholder",
-      //   dropOnEmpty: true,
-      //   tolerance: 'pointer',
-      //   start: function (event, ui) {
-      //     ui.placeholder.height(ui.item.find('.column').outerHeight());
-      //     startColumn = ui.item.parent();
-      //   },
-      //   stop: function (event, ui) {
-      //     var columnId = ui.item.find('.column').attr('column-id');
-
-      //     // component.updateColumnOrder({
-      //     //   columnId: columnId
-      //     // });
-      //   }
-      // }).disableSelection();
-
-      //component.bindPane();;
-
-      window.addEventListener('resize', function (e) {
-        component.updateBoardWidth();
-      });
-      component.updateBoardWidth();
-      document.getElementById('content-wrapper').style.backgroundColor = '';
-    }, 100);
+  cardsForColumn(column: Column) {
+    return this.cards.filter(val => column._id === val.columnId);
   }
 
   bindPane() {
@@ -124,23 +98,23 @@ export class TrelloBoardComponent implements OnInit {
     });
   }
 
-  updateBoardWidth() {
-    // this.boardWidth = ((this.board.columns.length + (this.columnsAdded > 0 ? 1 : 2)) * 280) + 10;
-    this.boardWidth = ((this.columns.length + 1) * 280) + 10;
+  // updateBoardWidth() {
+  //   // this.boardWidth = ((this.board.columns.length + (this.columnsAdded > 0 ? 1 : 2)) * 280) + 10;
+  //   this.boardWidth = ((this.columns.length + 1) * 280) + 10;
 
-    if (this.boardWidth > document.body.scrollWidth) {
-      document.getElementById('main').style.width = this.boardWidth + 'px';
-    } else {
-      document.getElementById('main').style.width = '100%';
-    }
+  //   if (this.boardWidth > document.body.scrollWidth) {
+  //     document.getElementById('main').style.width = this.boardWidth + 'px';
+  //   } else {
+  //     document.getElementById('main').style.width = '100%';
+  //   }
 
-    if (this.columnsAdded > 0) {
-      let wrapper = document.getElementById('content-wrapper');
-      wrapper.scrollLeft = wrapper.scrollWidth;
-    }
+  //   if (this.columnsAdded > 0) {
+  //     let wrapper = document.getElementById('content-wrapper');
+  //     wrapper.scrollLeft = wrapper.scrollWidth;
+  //   }
 
-    this.columnsAdded++;
-  }
+  //   this.columnsAdded++;
+  // }
 
   updateBoard() {
     if (this.board.title && this.board.title.trim() !== '') {
@@ -148,13 +122,13 @@ export class TrelloBoardComponent implements OnInit {
     } else {
       this.board.title = this.currentTitle;
     }
-    this.editingTilte = false;
+    this.editingTitle = false;
     document.title = this.board.title + " | Generic Task Manager";
   }
 
   editTitle() {
     this.currentTitle = this.board.title;
-    this.editingTilte = true;
+    this.editingTitle = true;
 
     let input = this.el.nativeElement
       .getElementsByClassName('board-title')[0]
@@ -170,14 +144,13 @@ export class TrelloBoardComponent implements OnInit {
   }
 
   addCard(card: Card) {
-    this.board.cards.push(card);
+    this.cards.push(card);
   }
 
   foreceUpdateCards() {
-    var cards = JSON.stringify(this.board.cards);
-    this.board.cards = JSON.parse(cards);
+    var cards = JSON.stringify(this.cards);
+    this.cards = JSON.parse(cards);
   }
-
 
   onCardUpdate(card: Card) {
     this.foreceUpdateCards();

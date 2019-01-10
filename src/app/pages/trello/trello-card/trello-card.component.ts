@@ -59,7 +59,7 @@ export class TrelloCardComponent implements OnInit {
       this.card.title = this.currentTitle;
     }
 
-    this._cardService.put(this.card).then(res => {
+    this._cardService.edit(this.card).subscribe(res => {
       this._ws.updateCard(this.card.boardId, this.card);
     });
     this.editingCard = false;

@@ -23,6 +23,11 @@ export class TrelloCardService {
         .get<Card[]>(`${this.baseUrl}/card`)
   }
 
+  getAllForBoardId(boardId: string): Observable<Card[]> {
+    return this.httpClient
+        .get<Card[]>(`${this.baseUrl}/board/${boardId}/cards`)
+  }
+
   getById(id: string): Observable<Card> {
     return this.httpClient
         .get<Card>(`${this.baseUrl}/card/${id}`)

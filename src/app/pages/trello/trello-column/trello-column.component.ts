@@ -4,6 +4,7 @@ import { Card, Column, Board} from '../../../@core/model';
 import { WebSocketService } from '../../../@core/data/ws.service';
 import { TrelloColumnService } from './trello-column.service';
 import { TrelloCardService } from '../trello-card/trello-card.service';
+import { SortablejsOptions } from 'angular-sortablejs';
 
 // declare var jQuery: any;
 
@@ -25,6 +26,16 @@ export class TrelloColumnComponent implements OnInit {
   addCardText: string;
   currentTitle: string;
 
+  options: SortablejsOptions = {
+    group: 'board',
+    onUpdate: (event: any) => {
+      this.postChangesToServer(event);
+    },
+    onAdd: (event: any) => {
+      this.postChangesToServer(event);
+    }
+  };
+
   constructor(private el: ElementRef,
     private ws: WebSocketService,
     private cardService: TrelloCardService) {
@@ -33,82 +44,47 @@ export class TrelloColumnComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.setupView();
-    // this._ws.onColumnUpdate.subscribe((column: Column) => {
-    //   if (this.column._id === column._id) {
-    //     this.column.title = column.title;
-    //     this.column.order = column.order;
-    //   }
-    // });
+    this.cardsForColumn(this.column._id);
   }
 
-  setupView() {
-    let component = this;
-    var startColumn;
-    jQuery('.card-list').sortable({
-      connectWith: ".card-list",
-      placeholder: "card-placeholder",
-      dropOnEmpty: true,
-      tolerance: 'pointer',
-      start: function(event, ui) {
-        ui.placeholder.height(ui.item.outerHeight());
-        startColumn = ui.item.parent();
-      },
-      stop: function(event, ui) {
-        var senderColumnId = startColumn.attr('column-id');
-        var targetColumnId = ui.item.closest('.card-list').attr('column-id');
-        var cardId = ui.item.find('.card').attr('card-id');
+  cardsForColumn(columnId: string) {
+    this.cards = this.cards
+        .filter(val => columnId === val.columnId)
+        // .sort((a: Card, b: Card) => a.order - b.order);
+  }
 
-        component.updateCardsOrder({
-          columnId: targetColumnId || senderColumnId,
-          cardId: cardId
-        });
+  postChangesToServer(event: any) {
+    const columnId = event.target.dataset.columnId;
+    const cardId = event.item.dataset.cardId;
+    const newIndex = event.newIndex;
+
+    this.cards = this.cards.map(val => {
+      if(val._id === cardId) {
+        const item = {...val, order: newIndex, columnId: columnId}
+        this.sendCardToServer(item)
+
+        return item;
       }
+      return val;
+    }).map((val, index) => {
+      if(val._id !== cardId) {
+        const item = {...val, order: index};
+        this.sendCardToServer(item);
+
+        return item;
+      }
+      return val
     });
-    jQuery('.card-list').disableSelection();
+
+    this.cardsForColumn(columnId);
   }
 
-  updateCardsOrder(event) {
-    let cardArr = jQuery('[column-id=' + event.columnId + '] .card'),
-      i: number = 0,
-      elBefore: number = -1,
-      elAfter: number = -1,
-      newOrder: number = 0;
-
-    for (i = 0; i < cardArr.length - 1; i++) {
-      if (cardArr[i].getAttribute('card-id') == event.cardId) {
-        break;
-      }
-    }
-
-    if (cardArr.length > 1) {
-      if (i > 0 && i < cardArr.length - 1) {
-        elBefore = +cardArr[i - 1].getAttribute('card-order');
-        elAfter = +cardArr[i + 1].getAttribute('card-order');
-
-        newOrder = elBefore + ((elAfter - elBefore) / 2);
-      }
-      else if (i == cardArr.length - 1) {
-        elBefore = +cardArr[i - 1].getAttribute('card-order');
-        newOrder = elBefore + 1000;
-      } else if (i == 0) {
-        elAfter = +cardArr[i + 1].getAttribute('card-order');
-
-        newOrder = elAfter / 2;
-      }
-    } else {
-      newOrder = 1000;
-    }
-
-
-    let card = this.cards.filter(x => x._id === event.cardId)[0];
-    let oldColumnId = card.columnId;
-    card.order = newOrder;
-    card.columnId = event.columnId;
-    this.cardService.edit(card).subscribe(res => {
-      this.ws.updateCard(this.board._id, card);
-    })
+  sendCardToServer(item) {
+    this.cardService.edit(item).subscribe(res => {
+      this.ws.updateCard(this.board._id, item);
+    });
   }
+
 
   blurOnEnter(event) {
     if (event.keyCode === 13) {
@@ -117,14 +93,15 @@ export class TrelloColumnComponent implements OnInit {
   }
 
   addCard() {
-    this.cards = this.cards || [];
-    let newCard = <Card>{
+    let newCard = {
       title: this.addCardText,
-      order: (this.cards.length + 1) * 1000,
+      order: (this.cards.length),
       content: '',
       columnId: this.column._id,
       boardId: this.board._id
-    };
+    } as Card;
+
+    this.cards = [...this.cards, newCard]
     this.cardService.add(newCard)
       .subscribe(card => {
         this.onAddCard.emit(card);
@@ -166,9 +143,5 @@ export class TrelloColumnComponent implements OnInit {
   clearAddCard() {
     this.addingCard = false;
     this.addCardText = '';
-  }
-
-  onCardUpdate(card: Card){
-    this.cardUpdate.emit(card);
   }
 }

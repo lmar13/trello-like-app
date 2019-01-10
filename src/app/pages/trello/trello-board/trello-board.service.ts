@@ -35,8 +35,8 @@ export class TrelloBoardService {
   getBoardWithColumnsAndCards(id: string): Observable<any> {
     return Observable.forkJoin(
       this.getById(id),
-      this.columnService.getById(id),
-      this.cardService.getById(id)
+      this.columnService.getAll(),
+      this.cardService.getAllForBoardId(id)
     );
   }
 
