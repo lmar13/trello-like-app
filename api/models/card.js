@@ -6,7 +6,9 @@ var cardSchema = mongoose.Schema({
     content: String,
     columnId: String,
     boardId: String,
-    order: Number
+    order: Number,
+    owner: String,
+    assignedUsers: [String]
 });
 
 module.exports = mongoose.model('Card', cardSchema);

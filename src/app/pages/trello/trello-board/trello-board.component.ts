@@ -70,7 +70,7 @@ export class TrelloBoardComponent implements OnInit {
 
   ngOnDestroy(){
     // console.log(`leaving board ${this.board._id}`);
-    // this.ws.leave(this.board.id);
+    // this.ws.leave(this.board._id);
   }
 
   cardsForColumn(column: Column) {
