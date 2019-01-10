@@ -17,6 +17,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from '../environments/environment';
 import { ENVIRONMENT_TOKEN } from './@core/data/environment';
 // import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { SortablejsModule } from 'angular-sortablejs';
 
 // const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
@@ -31,6 +32,7 @@ import { ENVIRONMENT_TOKEN } from './@core/data/environment';
     NgbModule.forRoot(),
     ThemeModule.forRoot(),
     CoreModule.forRoot(),
+    SortablejsModule.forRoot({ animation: 150 })
   ],
   bootstrap: [AppComponent],
   providers: [{

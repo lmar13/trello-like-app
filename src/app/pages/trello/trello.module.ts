@@ -10,7 +10,8 @@ import { TrelloColumnComponent } from "./trello-column/trello-column.component";
 import { TrelloListComponent } from "./trello-list/trello-list.component";
 import { TrelloRoutingModule } from "./trello-routing.module";
 import { TrelloComponent } from "./trello.component";
-import { WebSocketService } from "../../@core/data/ws.service";
+// import { WebSocketService } from "../../@core/data/ws.service";
+import { SortablejsModule } from "angular-sortablejs";
 
 
 const TRELLO_COMPONENTS = [
@@ -29,6 +30,7 @@ const TRELLO_COMPONENTS = [
     ThemeModule,
     Ng2SmartTableModule,
     NbActionsModule,
+    SortablejsModule,
   ],
   declarations: [
     ...TRELLO_COMPONENTS
