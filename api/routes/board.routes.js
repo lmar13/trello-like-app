@@ -20,7 +20,7 @@ module.exports = function(app) {
     });
 
     /* Read */
-    app.get('/board', function (req, res) {
+    app.get('/boards', function (req, res) {
         log('GET /board');
         Board.find(function(err, boards) {
             if (err) {
@@ -29,6 +29,24 @@ module.exports = function(app) {
             // res.json({info: 'boards found successfully', data: boards});
             res.json(boards);
         });
+    });
+
+    app.get('/board', function (req, res) {
+      log('GET /board?userId', req.query.userId);
+
+      Board.find({assignedUsers: req.query.userId}, function(err, boards) {
+
+        if (err) {
+          console.error(err);
+          res.status(404).json({info: 'error during find boards', error: err});
+        };
+        if (boards) {
+            // res.json({info: 'boards found successfully', data: board});
+            res.json(boards);
+        } else {
+            res.json({info: 'boards not found'});
+        }
+      });
     });
 
     app.get('/board/:id', function (req, res) {
@@ -64,7 +82,7 @@ module.exports = function(app) {
     // });
 
     app.get('/board/:id/cards', function (req, res) {
-        log('GET /column/:id');
+        log('GET /board/:id/cards');
         Board.findById(req.params.id, function(err, board) {
             if (err) {
                 res.json({info: 'error during find board', error: err});

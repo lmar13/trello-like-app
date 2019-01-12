@@ -66,6 +66,22 @@ module.exports = function(app) {
         });
     });
 
+    app.put('/cardAll', function (req, res) {
+      log('PUT /cardAll');
+      console.log(req.body);
+      Card.find({boardId: req.body.boardId}, function(error, cards) {
+        if (error) {
+          res.status(404).json({info: 'Unable to find cards', error});
+        }
+        if (cards) {
+          log(req.body.cards);
+          res.status(200).json(_.merge(cards, req.body.cards));
+        } else {
+          res.status(404).json({info: 'Cards not found'});
+        }
+      });
+    })
+
     /* Delete */
     app.delete('/card/:id', function (req, res) {
         log('DELETE /card/:id');

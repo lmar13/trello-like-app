@@ -27,10 +27,12 @@ module.exports = function(server, origins) {
                 .emit("addCard", data);
         });
 
-        socket.on('updateCard', function(data) {
-            log('updateCard: ', data);
-            socket.broadcast.to(data.boardId)
-                .emit("updateCard", data);
+        socket.on('updateCard', function({ boardId, card, changeOrder }) {
+            log('updateCard: ', { boardId, changeOrder, card });
+            if(!changeOrder) {
+              socket.broadcast.to(boardId)
+                .emit("updateCard", card);
+            }
         });
 
         socket.on('disconnect', function() {
