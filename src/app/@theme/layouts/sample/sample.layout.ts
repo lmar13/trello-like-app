@@ -1,3 +1,4 @@
+import { SmartTableService } from './../../../@core/data/smart-table.service';
 import { Component, OnDestroy } from '@angular/core';
 import { delay, withLatestFrom, takeWhile } from 'rxjs/operators';
 import {
@@ -11,6 +12,7 @@ import {
 
 import { StateService } from '../../../@core/data/state.service';
 import { subMenu } from '../../../pages/trello/trello.component';
+import { Subscription } from 'rxjs';
 
 // TODO: move layouts into the framework
 @Component({
@@ -28,11 +30,14 @@ export class SampleLayoutComponent implements OnDestroy {
 
   currentTheme: string;
 
-  constructor(protected stateService: StateService,
-              protected menuService: NbMenuService,
-              protected themeService: NbThemeService,
-              protected bpService: NbMediaBreakpointsService,
-              protected sidebarService: NbSidebarService) {
+  constructor(
+    protected stateService: StateService,
+    protected menuService: NbMenuService,
+    protected themeService: NbThemeService,
+    protected bpService: NbMediaBreakpointsService,
+    protected sidebarService: NbSidebarService,
+    private smartTableService: SmartTableService
+  ) {
     this.stateService.onLayoutState()
       .pipe(takeWhile(() => this.alive))
       .subscribe((layout: string) => this.layout = layout);

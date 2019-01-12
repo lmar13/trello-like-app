@@ -43,11 +43,11 @@ var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 mongoose.connect(mongoUri).then(function (db){
   // Provisional code, for runing db.dropDatabase() every sunday
-    if (new Date().getDay() == 0) {
-      mongoose.connection.db.dropDatabase(function (){
-        log('db droped');
-      });
-    }
+    // if (new Date().getDay() == 0) {
+    //   mongoose.connection.db.dropDatabase(function (){
+    //     log('db droped');
+    //   });
+    // }
 }).catch(function(err){
     log('Unabled to connect to mongodb err:', err);
     log('Check if MongoDB Server is running and available.');

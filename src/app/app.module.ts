@@ -16,10 +16,10 @@ import { ThemeModule } from './@theme/theme.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from '../environments/environment';
 import { ENVIRONMENT_TOKEN } from './@core/data/environment';
-// import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { SortablejsModule } from 'angular-sortablejs';
 
-// const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
+const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,7 +28,7 @@ import { SortablejsModule } from 'angular-sortablejs';
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
-    // SocketIoModule.forRoot(config),
+    SocketIoModule.forRoot(config),
     NgbModule.forRoot(),
     ThemeModule.forRoot(),
     CoreModule.forRoot(),

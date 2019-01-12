@@ -21,6 +21,6 @@ export class Where implements PipeTransform {
     if (input){
       this.tmp.push(...input.filter(item => Where._whereComparer(item, args)));
     }
-    return this.tmp; 
+    return this.tmp;
   }
 }

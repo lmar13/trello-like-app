@@ -40,3 +40,8 @@ nb-layout.with-scroll .scrollable-container {
   padding-left: 3px;
   padding-right: 3px;
 }
+
+.row {
+  margin-bottom: 10px;
+  min-height: calc(100vh - 387px);
+}

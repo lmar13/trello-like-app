@@ -13,7 +13,7 @@ const routes: Routes = [{
       component: TrelloListComponent,
     },
     {
-      path: 'board',
+      path: 'board/:boardId',
       component: TrelloBoardComponent,
     },
     {

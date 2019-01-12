@@ -43,6 +43,16 @@ export class TrelloCardService {
       );
   }
 
+  editAll(boardId: string, cards: Card[]): Observable<Card[]> {
+    return this.httpClient.put<Card[]>(`${this.baseUrl}/cardAll`, { boardId, cards })
+      .pipe(
+        catchError(err => {
+          throw err;
+        }),
+        map(value => value as Card[])
+      )
+  }
+
   add(card: Card): Observable<Card> {
     return this.httpClient.post<Card>(`${this.baseUrl}/card`, card)
       .pipe(

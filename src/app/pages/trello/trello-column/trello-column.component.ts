@@ -18,8 +18,8 @@ export class TrelloColumnComponent implements OnInit {
   @Input() board: Board;
   @Input() cards: Card[];
 
-  @Output() public onAddCard: EventEmitter<Card>;
-  @Output() cardUpdate: EventEmitter<Card>;
+  @Output() onAddCard = new EventEmitter<Card>();
+  @Output() onCardUpdate = new EventEmitter<Card>();
 
   editingColumn = false;
   addingCard = false;
@@ -29,28 +29,31 @@ export class TrelloColumnComponent implements OnInit {
   options: SortablejsOptions = {
     group: 'board',
     onUpdate: (event: any) => {
-      this.postChangesToServer(event);
+      // this.postChangesToServer(event);
+      console.log('update');
+      this.onCardUpdate.emit(event);
     },
     onAdd: (event: any) => {
-      this.postChangesToServer(event);
+      // this.postChangesToServer(event);
+      console.log('add');
+      this.onCardUpdate.emit(event);
     }
   };
 
   constructor(private el: ElementRef,
     private ws: WebSocketService,
     private cardService: TrelloCardService) {
-    this.onAddCard = new EventEmitter();
-    this.cardUpdate = new EventEmitter();
   }
 
   ngOnInit() {
-    this.cardsForColumn(this.column._id);
+      // this.cardsForColumn(this.column._id);
   }
 
   cardsForColumn(columnId: string) {
-    this.cards = this.cards
+    // if(this.cards && !this.cards['info']){
+      this.cards = this.cards
         .filter(val => columnId === val.columnId)
-        // .sort((a: Card, b: Card) => a.order - b.order);
+    // }
   }
 
   postChangesToServer(event: any) {
@@ -61,7 +64,7 @@ export class TrelloColumnComponent implements OnInit {
     this.cards = this.cards.map(val => {
       if(val._id === cardId) {
         const item = {...val, order: newIndex, columnId: columnId}
-        this.sendCardToServer(item)
+        this.sendCardToServer(item, false);
 
         return item;
       }
@@ -69,19 +72,19 @@ export class TrelloColumnComponent implements OnInit {
     }).map((val, index) => {
       if(val._id !== cardId) {
         const item = {...val, order: index};
-        this.sendCardToServer(item);
+        this.sendCardToServer(item, true);
 
         return item;
       }
       return val
     });
 
-    this.cardsForColumn(columnId);
+    // this.cardsForColumn(columnId);
   }
 
-  sendCardToServer(item) {
+  sendCardToServer(item, changeOrder) {
     this.cardService.edit(item).subscribe(res => {
-      this.ws.updateCard(this.board._id, item);
+      this.ws.updateCard(this.board._id, item, changeOrder);
     });
   }
 
@@ -105,7 +108,7 @@ export class TrelloColumnComponent implements OnInit {
     this.cardService.add(newCard)
       .subscribe(card => {
         this.onAddCard.emit(card);
-        this.ws.addCard(card.boardId, card);
+        // this.ws.addCard(card.boardId, card);
       });
   }
 

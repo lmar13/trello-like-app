@@ -2,7 +2,7 @@
     <nb-card-body>
 
     <nb-actions size="small" style="width: 100%;">
-      <nb-action icon="nb-search"></nb-action>
+      <nb-action>Project: {{board.title}}</nb-action>
       <nb-action icon="nb-power-circled"></nb-action>
       <nb-action icon="nb-person"></nb-action>
       <nb-action icon="nb-home"></nb-action>
@@ -16,13 +16,18 @@
 </nb-card>
 
 <div class="container-fluid">
+  <nb-alert outline="danger" *ngIf="(this.cards && this.cards['info']) || (!board._id || board._id === 'init')">
+      <strong>Error!</strong> Please choose project to see the board
+  </nb-alert>
   <div class="row" *ngIf="board">
     <div *ngFor="let column of columns" class="sortable-column col-3">
       <ngx-trello-column
           [column]="column"
           [board]="board"
+          [cards]="cards"
           (onAddCard)="addCard($event)"
-          [cards]="cards">
+          (onCardUpdate)="updateCard($event)"
+      >
       </ngx-trello-column>
     </div>
   </div>

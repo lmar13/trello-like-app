@@ -80,8 +80,7 @@ export class TrelloListComponent implements OnInit {
 
   getRowData() {
     if(this.selectedRow){
-      this.smartTableService.changeSelectedBoard(this.selectedRow.id);
-      this.router.navigate(['/pages/trello/board']);
+      this.router.navigate([`/pages/trello/board/${this.selectedRow._id}`]);
     } else {
       alert('You need to choose project');
     }

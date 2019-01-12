@@ -18,20 +18,20 @@ export class TrelloCardComponent implements OnInit {
   zone: NgZone;
   constructor(private el: ElementRef,
     private _ref: ChangeDetectorRef,
-    private _ws: WebSocketService,
+    private ws: WebSocketService,
     private _cardService: TrelloCardService) {
     this.zone = new NgZone({ enableLongStackTrace: false });
     this.cardUpdate = new EventEmitter();
   }
 
   ngOnInit() {
-    this._ws.onCardUpdate.subscribe((card: Card) => {
-      if (this.card._id === card._id) {
-        this.card.title = card.title;
-        this.card.order = card.order;
-        this.card.columnId = card.columnId;
-      }
-    });
+    // this.ws.onUpdateCard().subscribe((card: Card) => {
+    //   if (this.card._id === card._id) {
+    //     this.card.title = card.title;
+    //     this.card.order = card.order;
+    //     this.card.columnId = card.columnId;
+    //   }
+    // });
   }
 
   blurOnEnter(event) {
@@ -59,9 +59,9 @@ export class TrelloCardComponent implements OnInit {
       this.card.title = this.currentTitle;
     }
 
-    this._cardService.edit(this.card).subscribe(res => {
-      this._ws.updateCard(this.card.boardId, this.card);
-    });
+    // this._cardService.edit(this.card).subscribe(res => {
+    //   this.ws.updateCard(this.card.boardId, this.card);
+    // });
     this.editingCard = false;
   }
 

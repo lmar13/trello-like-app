@@ -9,7 +9,7 @@ import { EnvironmentProviderService } from './environment-provider.service';
 })
 export class SmartTableService {
 
-  private selectedBoardSource = new BehaviorSubject("0");
+  private selectedBoardSource = new BehaviorSubject("init");
   selectedBoard = this.selectedBoardSource.asObservable();
   private baseUrl: string;
 
@@ -22,11 +22,21 @@ export class SmartTableService {
 
   getData(): Observable<Board[]> {
     // return this.httpClient.get<string[]>(`./../../../assets/data/data.json`);
-    return this.httpClient.get<Board[]>(`${this.baseUrl}/board`)
+    return this.httpClient.get<Board[]>(`${this.baseUrl}/boards`)
   }
 
-  getDataForUser(id: number): Observable<string[]> {
-    return this.httpClient.get<string[]>(`./../../../assets/data/data.json`);
+  getBoardById(id: string): Observable<Board> {
+    return this.httpClient.get<Board>(`${this.baseUrl}/board/${id}`)
+  }
+
+  getDataForUser(id: string): Observable<Board[]> {
+    // return this.httpClient.get<string[]>(`./../../../assets/data/data.json`);
+    return this.httpClient.get<Board[]>(`${this.baseUrl}/board`, {
+      params: {
+        // userId: id
+        userId: '6065178'
+      }
+    })
   }
 
   changeSelectedBoard(id: string) {

@@ -11,14 +11,11 @@ export const subMenu: NbMenuItem[] = [
     title: 'My projects',
     link: '/pages/trello/1',  // change to correct value
   },
-  {
-    title: 'Project board',
-    link: '/pages/trello/board'
-  }
 ];
 
 @Component({
   selector: 'ngx-trello',
+  styles: ['nb-card {height: calc(100vh - 210px);}'],
   template: `
     <div class="row">
       <nb-card style="width: 100%">
