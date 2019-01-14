@@ -48,11 +48,11 @@ export class WebSocketService {
     return this.socket.fromEvent('addCard');
   }
 
-  updateCard(boardId: string, card: Card, changeOrder: boolean) {
-    this.socket.emit('updateCard', { boardId, card, changeOrder });
+  updateCard(boardId: string, cards: Card[]) {
+    this.socket.emit('updateCard', { boardId, cards });
   }
 
-  onUpdateCard(): Observable<Card> {
+  onUpdateCard(): Observable<Card[]> {
     // return new Observable<Card>(observer => {
     //   this.socket.on('updateCard', (card: Card) => observer.next(card));
     // });
