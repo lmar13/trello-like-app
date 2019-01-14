@@ -1,12 +1,9 @@
-import { jQuery } from 'jquery';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Card, Column, Board} from '../../../@core/model';
 import { WebSocketService } from '../../../@core/data/ws.service';
 import { TrelloColumnService } from './trello-column.service';
 import { TrelloCardService } from '../trello-card/trello-card.service';
 import { SortablejsOptions } from 'angular-sortablejs';
-
-// declare var jQuery: any;
 
 @Component({
   selector: 'ngx-trello-column',
@@ -64,7 +61,7 @@ export class TrelloColumnComponent implements OnInit {
     this.cards = this.cards.map(val => {
       if(val._id === cardId) {
         const item = {...val, order: newIndex, columnId: columnId}
-        this.sendCardToServer(item, false);
+        // this.sendCardToServer(item, false);
 
         return item;
       }
@@ -72,7 +69,7 @@ export class TrelloColumnComponent implements OnInit {
     }).map((val, index) => {
       if(val._id !== cardId) {
         const item = {...val, order: index};
-        this.sendCardToServer(item, true);
+        // this.sendCardToServer(item, true);
 
         return item;
       }
@@ -81,13 +78,6 @@ export class TrelloColumnComponent implements OnInit {
 
     // this.cardsForColumn(columnId);
   }
-
-  sendCardToServer(item, changeOrder) {
-    this.cardService.edit(item).subscribe(res => {
-      this.ws.updateCard(this.board._id, item, changeOrder);
-    });
-  }
-
 
   blurOnEnter(event) {
     if (event.keyCode === 13) {
