@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { NbActionsModule } from "@nebular/theme";
+import { NbActionsModule, NbDialogModule } from "@nebular/theme";
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { SmartTableService } from '../../@core/data/smart-table.service';
 import { OrderBy, Where } from "../../@core/pipes";
@@ -12,6 +12,8 @@ import { TrelloRoutingModule } from "./trello-routing.module";
 import { TrelloComponent } from "./trello.component";
 // import { WebSocketService } from "../../@core/data/ws.service";
 import { SortablejsModule } from "angular-sortablejs";
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import { AddEditCardComponent } from './add-edit-card/add-edit-card.component';
 
 
 const TRELLO_COMPONENTS = [
@@ -20,6 +22,7 @@ const TRELLO_COMPONENTS = [
   TrelloBoardComponent,
   TrelloCardComponent,
   TrelloColumnComponent,
+  AddEditCardComponent,
   OrderBy,
   Where,
 ];
@@ -31,6 +34,8 @@ const TRELLO_COMPONENTS = [
     Ng2SmartTableModule,
     NbActionsModule,
     SortablejsModule,
+    DragDropModule,
+    NbDialogModule.forChild(),
   ],
   declarations: [
     ...TRELLO_COMPONENTS

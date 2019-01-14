@@ -1,6 +1,8 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { NbDialogService } from '@nebular/theme';
+import { AddEditCardComponent } from './../add-edit-card/add-edit-card.component';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SmartTableService } from '../../../@core/data/smart-table.service';
+import { SortablejsOptions } from 'angular-sortablejs';
 import { WebSocketService } from '../../../@core/data/ws.service';
 import { Board, Card, Column } from '../../../@core/model';
 import { TrelloCardService } from '../trello-card/trello-card.service';
@@ -16,13 +18,24 @@ export class TrelloBoardComponent implements OnInit {
   board = {} as Board;
   columns = [] as Column[];
   cards = [] as Card[];
+  moveCardData = null;
+
+  options: SortablejsOptions = {
+    group: 'board',
+    onUpdate: (event: any) => {
+      this.updateCardPosition(event);
+    },
+    onAdd: (event: any) => {
+      this.updateCardPosition(event);
+    }
+  };
 
   constructor(
     private socketService: WebSocketService,
     private boardService: TrelloBoardService,
     private cardService: TrelloCardService,
-    private route: ActivatedRoute
-
+    private route: ActivatedRoute,
+    private dialogService: NbDialogService,
   ) { }
 
   ngOnInit() {
@@ -41,39 +54,76 @@ export class TrelloBoardComponent implements OnInit {
       this.socketService.join(param.boardId);
     });
 
-    this.socketService.onUpdateCard().subscribe(card => {
-      this.cardService.getAllForBoardId(this.board._id).subscribe(cards => {
-        console.log('updating card from server');
-        console.log(cards);
-        this.cards = cards;
-      });
+    this.socketService.onUpdateCard().subscribe(cards => {
+      this.cards = cards;
+      this.columns = this.columns.map(val => {
+        return {
+          ...val,
+          cards: !this.cards['info'] ? this.cards.filter(card => val._id === card.columnId) : []
+        }
+      })
     });
   }
 
   initFetchData() {
     this.boardService.getBoardWithColumnsAndCards(this.board._id)
-      .subscribe(data => [this.board, this.columns, this.cards] = data);
+      .subscribe(data => {
+        [this.board, this.columns, this.cards] = data
+        this.columns = this.columns.map(val => {
+          return {
+            ...val,
+            cards: !this.cards['info'] ? this.cards.filter(card => val._id === card.columnId) : []
+          }
+        })
+      });
+  }
+
+  moveCard(data) {
+    this.moveCardData = data;
   }
 
   addCard(card: Card) {
     this.cards.push(card);
   }
 
-  updateCard(event) {
-    const columnId = event.target.dataset.columnId;
+  updateCardPosition(event) {
+    const actionType = event.type;
     const cardId = event.item.dataset.cardId;
-    const newIndex = event.newIndex;
 
-    this.cards = this.cards.map((val, index) => {
-      return {
-        ...val,
-        order: cardId === val._id ? newIndex : index,
-        // order: index,
-        columnId: cardId === val._id ? columnId : val.columnId
-      }
-    });
+    const newColumnId = event.target.dataset.columnId;
+    const newContainerData = this.moveCardData
+      .map((val, index) => ({...val, order: index, columnId: newColumnId}));
 
-    this.cardService.editAll(this.board._id, this.cards)
-      .subscribe(cards => console.log(cards));
+    const prevColumnId = event.from.dataset.columnId;
+    const prevContainer = this.columns.filter(val => val._id === prevColumnId)[0];
+    let prevContainerData = prevContainer['cards'];
+
+    let editCards = [];
+    if(actionType === 'add') {
+      prevContainerData = prevContainerData
+        .filter(val => val._id !== cardId)
+        .map((val, index) => ({...val, order: index}));
+      editCards = [
+        ...this.cards.filter(val => (
+            val.columnId !== newColumnId &&
+            val.columnId !== prevColumnId
+        )),
+        ...prevContainerData,
+        ...newContainerData
+      ];
+    } else {
+      editCards = [
+        ...this.cards.filter(val => (
+            val.columnId !== newColumnId
+        )),
+        ...newContainerData
+      ];
+    }
+
+    this.cardService.editAll(this.board._id, editCards)
+      .subscribe(cards => {
+        this.cards = cards;
+        this.socketService.updateCard(this.board._id, cards);
+      });
   }
 }

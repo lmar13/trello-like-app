@@ -3,9 +3,7 @@
 
     <nb-actions size="small" style="width: 100%;">
       <nb-action>Project: {{board.title}}</nb-action>
-      <nb-action icon="nb-power-circled"></nb-action>
-      <nb-action icon="nb-person"></nb-action>
-      <nb-action icon="nb-home"></nb-action>
+      <nb-action><ngx-add-edit-card [title]="'Add new card'"></ngx-add-edit-card></nb-action>
       <nb-action icon="nb-gear" disabled></nb-action>
       <nb-action>
         Custom Action
@@ -20,15 +18,24 @@
       <strong>Error!</strong> Please choose project to see the board
   </nb-alert>
   <div class="row" *ngIf="board">
-    <div *ngFor="let column of columns" class="sortable-column col-3">
-      <ngx-trello-column
-          [column]="column"
-          [board]="board"
-          [cards]="cards"
-          (onAddCard)="addCard($event)"
-          (onCardUpdate)="updateCard($event)"
-      >
-      </ngx-trello-column>
+    <div *ngFor="let column of columns" class="col-3">
+      <div class="column" [attr.data-column-id]="column._id">
+        <div class="column-header">
+            <h4 [innerHtml]="column.title"></h4>
+        </div>
+        <div
+          [sortablejs]="column.cards"
+          [sortablejsOptions]="options"
+          [attr.data-column-id]="column._id"
+          class="card-list"
+          style="height: 100%;"
+          (drop)="moveCard(column.cards)"
+        >
+          <div *ngFor="let card of column.cards" [attr.data-card-id]="card._id">
+            <ngx-trello-card [card]="card"></ngx-trello-card>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
