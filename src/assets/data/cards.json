@@ -1,28 +1,34 @@
 [{
   "title": "Planning card",
   "content": "",
-  "columnId": "5c35dd4e9071a597f1c81487",
-  "boardId": "5c38663e9071a597f1c8149f",
+  "columnId": "5c3a75a39071a597f1c814af",
+  "boardId": "5c3a778a9071a597f1c814b3",
   "order": 0
 },
 {
   "title": "Development card",
   "content": "",
-  "columnId": "5c35dd5d9071a597f1c81488",
-  "boardId": "5c38663e9071a597f1c8149f",
+  "columnId": "5c3a75a39071a597f1c814b0",
+  "boardId": "5c3a778a9071a597f1c814b3",
   "order": 0
 },
 {
   "title": "Testing card",
   "content": "",
-  "columnId": "5c35dd659071a597f1c81489",
-  "boardId": "5c38663e9071a597f1c8149f",
+  "columnId": "5c3a75a39071a597f1c814b1",
+  "boardId": "5c3a778a9071a597f1c814b3",
   "order": 0
 },
 {
   "title": "Archive card",
   "content": "",
-  "columnId": "5c35dd719071a597f1c8148a",
-  "boardId": "5c38663e9071a597f1c8149f",
+  "columnId": "5c3a75a39071a597f1c814b2",
+  "boardId": "5c3a778a9071a597f1c814b3",
   "order": 0
 }]
+
+
+{ "_id" : ObjectId("5c3a75a39071a597f1c814af"), "title" : "Planning" }
+{ "_id" : ObjectId("5c3a75a39071a597f1c814b0"), "title" : "Development" }
+{ "_id" : ObjectId("5c3a75a39071a597f1c814b1"), "title" : "Testing" }
+{ "_id" : ObjectId("5c3a75a39071a597f1c814b2"), "title" : "Ready to archive" }
