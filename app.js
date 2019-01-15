@@ -5,7 +5,9 @@ var express = require('express')
     , port = process.env.PORT || 3000
     , router = express.Router()
     , log = require('./dev-logger.js')
-    , cors = require('cors');
+    , cors = require('cors')
+    , session = require('express-session')
+    , errorHandler = require('errorhandler');
 
 app.use(cors());
 
@@ -26,13 +28,23 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
+app.use(session({
+    secret: 'trello-like-app',
+    cookie: {
+      maxAge: 60000
+    },
+    resave: false,
+    saveUninitialized: false,
+  })
+)
+
 router.get('/', function(req, res, next) {
     res.sendFile(__dirname + '/dist/index.html');
 });
 
-router.get('/b/:id', function(req, res, next) {
-    res.sendFile(__dirname + '/dist/index.html');
-});
+// router.get('/b/:id', function(req, res, next) {
+//     res.sendFile(__dirname + '/dist/index.html');
+// });
 
 app.use('/', router);
 
