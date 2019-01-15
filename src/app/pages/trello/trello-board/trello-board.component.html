@@ -3,11 +3,15 @@
 
     <nb-actions size="small" style="width: 100%;">
       <nb-action>Project: {{board.title}}</nb-action>
-      <nb-action><ngx-add-edit-card [title]="'Add new card'"></ngx-add-edit-card></nb-action>
-      <nb-action icon="nb-gear" disabled></nb-action>
-      <nb-action>
-        Custom Action
+      <nb-action style="cursor: pointer;">
+        <ngx-add-edit-card
+          [opt]="'add'"
+          [title]="'Add new card'"
+          [boardId]="board._id"
+          (onAddCard)="addCard($event)"
+        ></ngx-add-edit-card>
       </nb-action>
+      <nb-action icon="nb-gear" disabled></nb-action>
     </nb-actions>
 
   </nb-card-body>
@@ -32,7 +36,7 @@
           (drop)="moveCard(column.cards)"
         >
           <div *ngFor="let card of column.cards" [attr.data-card-id]="card._id">
-            <ngx-trello-card [card]="card"></ngx-trello-card>
+            <ngx-trello-card [card]="card" (onDeleteCard)="deleteCard($event)"></ngx-trello-card>
           </div>
         </div>
       </div>

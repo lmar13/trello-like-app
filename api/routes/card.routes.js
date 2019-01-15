@@ -85,11 +85,11 @@ module.exports = function(app) {
     /* Delete */
     app.delete('/card/:id', function (req, res) {
         log('DELETE /card/:id');
-        Card.findByIdAndRemove(req.params.id, function(err) {
+        Card.findByIdAndRemove(req.params.id, function(err, ) {
             if (err) {
                 res.json({info: 'error during remove card', error: err});
             };
-            res.json({info: 'card removed successfully'});
+            res.status(200).json(req.body.card);
         });
     });
 };

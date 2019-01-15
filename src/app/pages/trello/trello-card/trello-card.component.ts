@@ -10,12 +10,15 @@ import { TrelloCardService } from './trello-card.service';
   styleUrls: ['./trello-card.component.scss'],
 })
 export class TrelloCardComponent implements OnInit {
-  @Input()
-  card: Card;
+  @Input() card: Card;
+
   @Output() cardUpdate: EventEmitter<Card>;
+  @Output() onDeleteCard = new EventEmitter<Card>();
+
   editingCard = false;
   currentTitle: string;
   zone: NgZone;
+
   constructor(private el: ElementRef,
     private _ref: ChangeDetectorRef,
     private ws: WebSocketService,
@@ -68,6 +71,10 @@ export class TrelloCardComponent implements OnInit {
   //TODO: check lifecycle
   private ngOnDestroy() {
     //this._ws.onCardUpdate.unsubscribe();
+  }
+
+  deleteCard() {
+    this.onDeleteCard.emit(this.card);
   }
 
 }

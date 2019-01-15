@@ -41,10 +41,6 @@ export class WebSocketService {
   }
 
   onAddCard(): Observable<Card> {
-    // return new Observable<Card>(observer => {
-    //   this.socket.on('addCard', (card: Card) => observer.next(card));
-    // });
-
     return this.socket.fromEvent('addCard');
   }
 
@@ -53,9 +49,22 @@ export class WebSocketService {
   }
 
   onUpdateCard(): Observable<Card[]> {
-    // return new Observable<Card>(observer => {
-    //   this.socket.on('updateCard', (card: Card) => observer.next(card));
-    // });
     return this.socket.fromEvent('updateCard');
+  }
+
+  editCard(boardId: string, card: Card) {
+    this.socket.emit('editCard', { boardId, card });
+  }
+
+  onEditCard(): Observable<Card> {
+    return this.socket.fromEvent('editCard');
+  }
+
+  deleteCard(boardId: string, card: Card) {
+    return this.socket.emit('deleteCard', { boardId, card });
+  }
+
+  onDeleteCard(): Observable<Card> {
+    return this.socket.fromEvent('deleteCard');
   }
 }

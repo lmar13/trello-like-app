@@ -56,26 +56,35 @@ export class TrelloBoardComponent implements OnInit {
 
     this.socketService.onUpdateCard().subscribe(cards => {
       this.cards = cards;
-      this.columns = this.columns.map(val => {
-        return {
-          ...val,
-          cards: !this.cards['info'] ? this.cards.filter(card => val._id === card.columnId) : []
-        }
-      })
+      this.columns = this.refreshDataInColumn();
     });
+
+    this.socketService.onAddCard().subscribe(card => {
+      this.cards.push(card);
+      this.columns = this.refreshDataInColumn();
+    })
+
+    this.socketService.onDeleteCard().subscribe(card => {
+      this.cards = this.cards.filter(val => val._id !== card._id);
+      this.columns = this.refreshDataInColumn();
+    })
   }
 
   initFetchData() {
     this.boardService.getBoardWithColumnsAndCards(this.board._id)
       .subscribe(data => {
         [this.board, this.columns, this.cards] = data
-        this.columns = this.columns.map(val => {
-          return {
-            ...val,
-            cards: !this.cards['info'] ? this.cards.filter(card => val._id === card.columnId) : []
-          }
-        })
+        this.columns = this.refreshDataInColumn();
       });
+  }
+
+  refreshDataInColumn() {
+    return this.columns.map(val => {
+      return {
+        ...val,
+        cards: !this.cards['info'] ? this.cards.filter(card => val._id === card.columnId) : []
+      }
+    });
   }
 
   moveCard(data) {
@@ -83,7 +92,12 @@ export class TrelloBoardComponent implements OnInit {
   }
 
   addCard(card: Card) {
-    this.cards.push(card);
+    this.cardService.add(card)
+      .subscribe(card => {
+        this.cards.push(card);
+        this.columns = this.refreshDataInColumn();
+        this.socketService.addCard(this.board._id, card);
+      });
   }
 
   updateCardPosition(event) {
@@ -125,5 +139,13 @@ export class TrelloBoardComponent implements OnInit {
         this.cards = cards;
         this.socketService.updateCard(this.board._id, cards);
       });
+  }
+
+  deleteCard(card: Card) {
+    this.cardService.delete(card._id).subscribe(res => {
+      this.cards = this.cards.filter(val => val._id !== card._id);
+      this.columns = this.refreshDataInColumn();
+      this.socketService.deleteCard(this.board._id, card);
+    });
   }
 }

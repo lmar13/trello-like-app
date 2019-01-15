@@ -1,3 +1,4 @@
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from "@angular/core";
 import { NbActionsModule, NbDialogModule } from "@nebular/theme";
 import { Ng2SmartTableModule } from 'ng2-smart-table';
@@ -14,6 +15,8 @@ import { TrelloComponent } from "./trello.component";
 import { SortablejsModule } from "angular-sortablejs";
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import { AddEditCardComponent } from './add-edit-card/add-edit-card.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TagInputModule } from 'ngx-chips';
 
 
 const TRELLO_COMPONENTS = [
@@ -36,6 +39,9 @@ const TRELLO_COMPONENTS = [
     SortablejsModule,
     DragDropModule,
     NbDialogModule.forChild(),
+    TagInputModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   declarations: [
     ...TRELLO_COMPONENTS

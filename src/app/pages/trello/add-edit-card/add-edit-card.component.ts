@@ -1,30 +1,71 @@
-import { Component, OnInit, TemplateRef, Input } from '@angular/core';
+import { Component, Input, OnDestroy, TemplateRef, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NbDialogService } from '@nebular/theme';
+import { Subscription } from 'rxjs';
+import { Column, Card } from '../../../@core/model';
+import { TrelloColumnService } from './../trello-column/trello-column.service';
 
 @Component({
   selector: 'ngx-add-edit-card',
-  template: `
-    <ng-template #dialog let-data let-ref="dialogRef">
-      <nb-card>
-        <nb-card-header>Template Dialog</nb-card-header>
-        <nb-card-body>{{ data.name }}</nb-card-body>
-        <nb-card-footer>
-          <button nbButton (click)="ref.close()">Close Dialog</button>
-        </nb-card-footer>
-      </nb-card>
-    </ng-template>
-    <span (click)="open(dialog)">{{ title }}</span>
-  `,
+  templateUrl: './add-edit-card.component.html',
   styleUrls: ['./add-edit-card.component.scss']
 })
-export class AddEditCardComponent {
+export class AddEditCardComponent implements OnDestroy {
 
+  @Input() opt: string;
   @Input() title: string;
+  @Input() boardId: string;
 
-  constructor(private dialogService: NbDialogService) { }
+  @Output() onAddCard = new EventEmitter<Card>();
+
+  columns = [] as Column[];
+  users = ['Planning', 'Development', 'Testing', 'Ready to archive'];
+  userSelected = ['Planning', 'Testing'];
+
+  form: FormGroup;
+  dialogRef: any;
+
+  private subscriptions: Subscription[] = [];
+
+  constructor(private dialogService: NbDialogService,
+              private fb: FormBuilder,
+              private columnService: TrelloColumnService) {
+    this.columnService.getAll().subscribe(columns => this.columns = columns);
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  private createForm() {
+    this.form = this.fb.group({
+      title: ['', Validators.required],
+      content: [''],
+      columnId: ['', Validators.required],
+      assignedUsers: [this.userSelected, Validators.required],
+      owner: ['']
+    });
+  }
 
   open(dialog: TemplateRef<any>) {
-    this.dialogService.open(dialog, { context: { name: this.title} });
+    this.dialogRef = this.dialogService.open(dialog, { closeOnBackdropClick : false, closeOnEsc: false });
+    this.createForm();
+  }
+
+  submit() {
+    let formData: Card = this.form.value;
+
+    // console.log(formData);
+
+    formData = {
+      ...formData,
+      owner: 'owner',
+      boardId: this.boardId,
+      order: 0,
+    };
+
+    this.onAddCard.emit(formData);
+    this.dialogRef.close();
   }
 
 }

@@ -2,11 +2,15 @@
     [attr.card-id]="card._id"
     [attr.card-order]="card.order"
     >
-    <span [innerHtml]="card.title" [style.display]="editingCard ? 'none' : ''">
-    </span>
-    <!-- <textarea
-        [style.display]="editingCard ? '' : 'none' "
-        (keydown)="blurOnEnter($event)"
-        (blur)="updateCard()"
-        [(ngModel)]="card.title" ></textarea> -->
+    <div class="row">
+      <div class="col-8">
+          {{ card.title }}
+      </div>
+      <div class="col-2">
+          <i class="nb-compose"></i>
+      </div>
+      <div class="col-2">
+          <i class="nb-trash" (click)="deleteCard()"></i>
+      </div>
+    </div>
 </li>

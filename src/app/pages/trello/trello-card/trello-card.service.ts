@@ -63,12 +63,13 @@ export class TrelloCardService {
       );
   }
 
-  delete(id: string): Observable<boolean> {
-    return this.httpClient.delete(`${this.baseUrl}/card/${id}`, {
-      observe: 'response'
-    }).pipe(
-      map
-      ((response: HttpResponse<Object>) => response.ok)
-    );
+  delete(id: string): Observable<Card> {
+    return this.httpClient.delete(`${this.baseUrl}/card/${id}`)
+      .pipe(
+        catchError(err => {
+          throw err;
+        }),
+        map(value => value as Card)
+      );
   }
 }

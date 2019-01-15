@@ -21,17 +21,29 @@ module.exports = function(server, origins) {
             socket.leave(boardId);
         });
 
-        socket.on('addCard', function(data) {
-            log('addCard: ', data);
-            socket.broadcast.to(data.boardId)
-                .emit("addCard", data);
+        socket.on('addCard', function({ boardId, card }) {
+            log('addCard: ', { boardId, card });
+            socket.broadcast.to(boardId)
+                .emit('addCard', card);
         });
 
         socket.on('updateCard', function({ boardId, cards }) {
             log('updateCard: ', { boardId, cards });
             socket.broadcast.to(boardId)
-              .emit("updateCard", cards);
+              .emit('updateCard', cards);
         });
+
+        socket.on('editCard', function({ boardId, card }) {
+            log('editCard: ', { boardId, card });
+            socket.broadcast.to(boardId)
+              .emit('editCard', card);
+        });
+
+        socket.on('deleteCard', function({ boardId, card }) {
+          log('deleteCard: ', { boardId, card });
+          socket.broadcast.to(boardId)
+            .emit('deleteCard', card);
+      })
 
         socket.on('disconnect', function() {
             log('disconnecting');
