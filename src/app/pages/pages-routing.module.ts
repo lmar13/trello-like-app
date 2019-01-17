@@ -1,11 +1,9 @@
-import { TrelloComponent } from './trello/trello.component';
-import { RouterModule, Routes } from '@angular/router';
+import { UserIsSignedInGuard } from './../@core/auth/shared/user-is-signed-in.guard';
 import { NgModule } from '@angular/core';
-
-import { PagesComponent } from './pages.component';
+import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { TrelloListComponent } from './trello/trello-list/trello-list.component';
-import { TrelloBoardComponent } from './trello/trello-board/trello-board.component';
+import { PagesComponent } from './pages.component';
+
 
 const routes: Routes = [{
   path: '',
@@ -17,7 +15,8 @@ const routes: Routes = [{
     },
     {
       path: 'trello',
-      loadChildren: './trello/trello.module#TrelloModule'
+      loadChildren: './trello/trello.module#TrelloModule',
+      canLoad: [UserIsSignedInGuard]
     },
     {
       path: '',
