@@ -3,11 +3,12 @@ var Board = require('../models/board.js');
 var Card = require('../models/card.js');
 var Column = require('../models/column.js');
 var log = require('../../dev-logger.js');
+var auth = require('../routes/auth.routes.js');
 
 module.exports = function(app) {
     log('starting board routes');
     /* Create */
-    app.post('/board', function (req, res) {
+    app.post('/board', auth.required, function (req, res) {
         log('POST /board', req.body);
         var newBoard = new Board(req.body);
         newBoard.save(function(err, newBoard) {
@@ -20,7 +21,7 @@ module.exports = function(app) {
     });
 
     /* Read */
-    app.get('/boards', function (req, res) {
+    app.get('/boards', auth.required, function (req, res) {
         log('GET /board');
         Board.find(function(err, boards) {
             if (err) {
@@ -31,7 +32,7 @@ module.exports = function(app) {
         });
     });
 
-    app.get('/board', function (req, res) {
+    app.get('/board', auth.required, function (req, res) {
       log('GET /board?userId', req.query.userId);
 
       Board.find({assignedUsers: req.query.userId}, function(err, boards) {
@@ -49,7 +50,7 @@ module.exports = function(app) {
       });
     });
 
-    app.get('/board/:id', function (req, res) {
+    app.get('/board/:id', auth.required, function (req, res) {
         console.log('GET /board/:id', req.params.id);
         Board.findById(req.params.id, function(err, board) {
             if (err) {
@@ -81,7 +82,7 @@ module.exports = function(app) {
     //     });
     // });
 
-    app.get('/board/:id/cards', function (req, res) {
+    app.get('/board/:id/cards', auth.required, function (req, res) {
         log('GET /board/:id/cards');
         Board.findById(req.params.id, function(err, board) {
             if (err) {
@@ -99,7 +100,7 @@ module.exports = function(app) {
     });
 
     /* Update */
-    app.put('/board/:id', function (req, res) {
+    app.put('/board/:id', auth.required, function (req, res) {
         log('PUT /board/:id', req.body);
         Board.findById(req.params.id, function(err, board) {
             if (err) {
@@ -123,7 +124,7 @@ module.exports = function(app) {
     });
 
     /* Delete */
-    app.delete('/board/:id', function (req, res) {
+    app.delete('/board/:id', auth.required, function (req, res) {
         log('DELETE /board/:id');
         Board.findByIdAndRemove(req.params.id, function(err) {
             if (err) {

@@ -1,11 +1,12 @@
 var _ = require('lodash');
 var Card = require('../models/card.js');
 var log = require('../../dev-logger.js');
+var auth = require('../routes/auth.routes.js');
 
 module.exports = function(app) {
     log('starting card routes');
     /* Create */
-    app.post('/card', function (req, res) {
+    app.post('/card', auth.required, function (req, res) {
         log('POST /card');
         var newCard = new Card(req.body);
         newCard.save(function(err, newCard) {
@@ -18,7 +19,7 @@ module.exports = function(app) {
     });
 
     /* Read */
-    app.get('/card', function (req, res) {
+    app.get('/card', auth.required, function (req, res) {
         log('GET /card');
         Card.find(function(err, cards) {
             if (err) {
@@ -29,7 +30,7 @@ module.exports = function(app) {
         });
     });
 
-    app.get('/card/:id', function (req, res) {
+    app.get('/card/:id', auth.required, function (req, res) {
         log('GET /card/:id');
         Card.findById(req.params.id, function(err, card) {
             if (err) {
@@ -45,7 +46,7 @@ module.exports = function(app) {
     });
 
     /* Update */
-    app.put('/card/:id', function (req, res) {
+    app.put('/card/:id', auth.required, function (req, res) {
         log('PUT /card/:id');
         Card.findById(req.params.id, function(err, card) {
             if (err) {
@@ -66,7 +67,7 @@ module.exports = function(app) {
         });
     });
 
-    app.put('/cardAll', function (req, res) {
+    app.put('/cardAll', auth.required, function (req, res) {
       log('PUT /cardAll');
       console.log(req.body);
       Card.find({boardId: req.body.boardId}, function(error, cards) {
@@ -83,7 +84,7 @@ module.exports = function(app) {
     })
 
     /* Delete */
-    app.delete('/card/:id', function (req, res) {
+    app.delete('/card/:id', auth.required, function (req, res) {
         log('DELETE /card/:id');
         Card.findByIdAndRemove(req.params.id, function(err, ) {
             if (err) {

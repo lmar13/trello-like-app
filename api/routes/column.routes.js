@@ -2,12 +2,13 @@ var _ = require('lodash');
 var Column = require('../models/column.js');
 var Card = require('../models/card.js');
 var log = require('../../dev-logger.js');
+var auth = require('../routes/auth.routes.js');
 
 module.exports = function(app) {
     log('starting column routes');
 
     /* Read */
-    app.get('/column', function (req, res) {
+    app.get('/column', auth.required, function (req, res) {
         log('GET /column');
         Column.find(function(err, columns) {
             if (err) {
@@ -18,7 +19,7 @@ module.exports = function(app) {
         });
     });
 
-    app.get('/column/:id', function (req, res) {
+    app.get('/column/:id', auth.required, function (req, res) {
         log('GET /column/:id');
         Column.findById(req.params.id, function(err, column) {
             if (err) {
@@ -34,7 +35,7 @@ module.exports = function(app) {
     });
 
     // Read card for specific board and sign it to correct columns
-    app.get('/column/:id/cards', function (req, res) {
+    app.get('/column/:id/cards', auth.required, function (req, res) {
         log('GET /column/:id');
         Column.findById(req.params.id, function(err, column) {
             if (err) {

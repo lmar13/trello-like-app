@@ -6,10 +6,15 @@ var express = require('express')
     , router = express.Router()
     , log = require('./dev-logger.js')
     , cors = require('cors')
-    , session = require('express-session')
-    , errorHandler = require('errorhandler');
+    , session = require('express-session');
+    // , errorHandler = require('errorhandler');
 
-app.use(cors());
+var corsOption = {
+  origin: 'http://localhost:4200',
+  credentials: true,
+}
+
+app.use(cors(corsOption));
 
 var server = require('http').createServer(app);
 
@@ -68,6 +73,8 @@ mongoose.connect(mongoUri).then(function (db){
 var cardRoutes = require('./api/routes/card.routes.js')(app);
 var columnRoutes = require('./api/routes/column.routes.js')(app);
 var boardRoutes = require('./api/routes/board.routes.js')(app);
+var userRoutes = require('./api/routes/user.routes.js')(app);
+var passport = require('./api/config/passport.js');
 
 server.listen(port, function () {
   log('App running on port', port);
