@@ -35,7 +35,7 @@ const TRELLO_COMPONENTS = [
     TrelloRoutingModule,
     ThemeModule,
     Ng2SmartTableModule,
-    NbActionsModule,
+    // NbActionsModule,
     SortablejsModule,
     DragDropModule,
     NbDialogModule.forChild(),
