@@ -5,6 +5,7 @@ import { NbMenuService, NbSidebarService } from '@nebular/theme';
 import { UserService } from '../../../@core/data/users.service';
 import { AnalyticsService } from '../../../@core/utils/analytics.service';
 import { filter, map } from 'rxjs/operators';
+import { User } from '../../../@core/model';
 
 @Component({
   selector: 'ngx-header',
@@ -15,7 +16,7 @@ export class HeaderComponent implements OnInit {
 
   @Input() position = 'normal';
 
-  user: any;
+  user: User;
 
   userMenu = [{ title: 'Profile' }, { title: 'Log out' }];
 
@@ -27,8 +28,11 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userService.getUsers()
-      .subscribe((users: any) => this.user = users.nick);
+    // this.authService.getAuthUserData().subscribe(user => {
+    //   this.user = user;
+    //   console.log(user);
+    // });
+    this.user = this.authService.decToken;
 
     this.menuService.onItemClick()
       .pipe(

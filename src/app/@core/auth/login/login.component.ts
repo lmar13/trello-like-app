@@ -42,7 +42,6 @@ export class LoginComponent implements OnInit  {
       .subscribe((result: boolean) => {
         this.hasLoginError = !result;
         this.submitted = true;
-        console.log(this.authService.decToken);
       });
   }
 
