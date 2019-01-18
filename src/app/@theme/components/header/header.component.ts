@@ -29,12 +29,7 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.authService.getAuthUserData().subscribe(user => {
-    //   this.user = user;
-    //   console.log(user);
-    // });
     this.isAuth = this.authService.isAuth;
-    console.log(this.isAuth)
     this.user = this.authService.decToken;
 
     this.menuService.onItemClick()
