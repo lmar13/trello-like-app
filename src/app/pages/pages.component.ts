@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 import { MENU_ITEMS } from './pages-menu';
+import { AuthService } from '../@core/auth/shared/auth.service';
 
 @Component({
   selector: 'ngx-pages',
@@ -12,6 +13,11 @@ import { MENU_ITEMS } from './pages-menu';
   `,
 })
 export class PagesComponent {
-
   menu = MENU_ITEMS;
+
+  constructor(private authService: AuthService) {
+    if(this.authService.decToken.role !== 'admin'){
+      this.menu = MENU_ITEMS.filter(val => val.title !== 'Admin Panel');
+    }
+  }
 }

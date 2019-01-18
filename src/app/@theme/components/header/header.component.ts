@@ -17,6 +17,7 @@ export class HeaderComponent implements OnInit {
   @Input() position = 'normal';
 
   user: User;
+  isAuth: boolean;
 
   userMenu = [{ title: 'Profile' }, { title: 'Log out' }];
 
@@ -32,6 +33,8 @@ export class HeaderComponent implements OnInit {
     //   this.user = user;
     //   console.log(user);
     // });
+    this.isAuth = this.authService.isAuth;
+    console.log(this.isAuth)
     this.user = this.authService.decToken;
 
     this.menuService.onItemClick()

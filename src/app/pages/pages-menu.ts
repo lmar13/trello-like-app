@@ -17,7 +17,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
     group: true,
   },
   {
-    title: 'Auth',
+    title: 'Admin Panel',
     icon: 'nb-locked',
     children: [
       {
@@ -26,7 +26,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
       },
       {
         title: 'Register',
-        link: '/auth/register',
+        link: '/auth/signup',
       },
       {
         title: 'Request Password',
@@ -35,6 +35,10 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Reset Password',
         link: '/auth/reset-password',
+      },
+      {
+        title: 'Users',
+        link: '/pages/admin/users',
       },
     ],
   },

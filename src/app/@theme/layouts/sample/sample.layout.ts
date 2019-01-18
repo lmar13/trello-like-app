@@ -1,3 +1,4 @@
+import { AuthService } from './../../../@core/auth/shared/auth.service';
 import { SmartTableService } from './../../../@core/data/smart-table.service';
 import { Component, OnDestroy } from '@angular/core';
 import { delay, withLatestFrom, takeWhile } from 'rxjs/operators';
@@ -36,7 +37,8 @@ export class SampleLayoutComponent implements OnDestroy {
     protected themeService: NbThemeService,
     protected bpService: NbMediaBreakpointsService,
     protected sidebarService: NbSidebarService,
-    private smartTableService: SmartTableService
+    private smartTableService: SmartTableService,
+    private authService: AuthService,
   ) {
     this.stateService.onLayoutState()
       .pipe(takeWhile(() => this.alive))
