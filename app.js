@@ -58,7 +58,7 @@ var mongoUri = process.env.MONGO_URI || 'mongodb://localhost/gtm';
 console.log(mongoUri);
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-mongoose.connect(mongoUri).then(function (db){
+mongoose.connect(mongoUri, { useNewUrlParser: true }).then(function (db){
   // Provisional code, for runing db.dropDatabase() every sunday
     // if (new Date().getDay() == 0) {
     //   mongoose.connection.db.dropDatabase(function (){

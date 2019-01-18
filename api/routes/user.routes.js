@@ -7,8 +7,19 @@ const auth = require('./auth.routes.js');
 
 module.exports = function(app) {
   app.post('/signup', auth.optional, (req, res, next) => {
-    const { body: { user: newUser } } = req;
+    const { email, empId, name, surname } = req.body;
+    const password = req.body.passwords.pass;
 
+    newUser = {
+      email,
+      empId,
+      name,
+      surname,
+      password,
+      role: 'user',
+    };
+
+    console.log(newUser.email);
     if(!newUser.email) {
       return res.status(422).json({
         errors: {
@@ -38,9 +49,10 @@ module.exports = function(app) {
       if (err) {
         res.status(404).json({ info: 'Cannot check if user exists' })
       }
-      if (!user) {
-        user.setPassword(newUser.password);
-        user.save().then(() => res.status(200).json({ user: newUser.toAuthJSON() }));
+      if (user.length <= 0) {
+        const finalUser = new User(newUser);
+        finalUser.setPassword(newUser.password);
+        finalUser.save().then(() => res.status(200).json(finalUser.toAuthJSON()));
       } else {
         res.status(404).json({ info: 'There is an account with this email' })
       }
@@ -75,7 +87,7 @@ module.exports = function(app) {
         const user = passportUser;
         user.token = passportUser.generateJWT();
 
-        return res.json({ user: user.toAuthJSON() });
+        return res.json(user.toAuthJSON());
       }
 
       return res.status(400).json(info);
@@ -83,7 +95,7 @@ module.exports = function(app) {
     })(req, res, next);
   });
 
-  app.post('/logout', auth.optional, (req, res, next) => {
+  app.post('/logout', auth.optional, (req, res) => {
     req.session.destroy(function(err) {
       if (err) {
         console.log(err);
@@ -91,4 +103,17 @@ module.exports = function(app) {
       res.end()
     });
   });
+
+  app.get('/users', auth.required, (req, res) => {
+    User.find(function(err, users) {
+      if(err) {
+        res.status(404).json({ error: 'Cannot get users'});
+      }
+      if(users) {
+        res.status(200).json(users);
+      } else {
+        res.status(404).json({ info: 'Cannot find any users'});
+      }
+    })
+  })
 };
