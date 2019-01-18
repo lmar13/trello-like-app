@@ -7,7 +7,7 @@
           {{ card.title }}
       </div>
       <div class="col-2">
-          <i class="nb-compose"></i>
+          <ngx-edit-card [card]="card" (onEditCard)="editCard()"></ngx-edit-card>
       </div>
       <div class="col-2">
           <i class="nb-trash" (click)="deleteCard()"></i>

@@ -1,6 +1,9 @@
 <ng-template #dialog let-data let-ref="dialogRef">
   <nb-card>
-    <nb-card-header>{{ title }}</nb-card-header>
+    <nb-card-header>
+      {{ title }}
+      <i class="nb-close" (click)="ref.close()"></i>
+    </nb-card-header>
     <nb-card-body>
       <form [formGroup]="form">
         <div class="form-group">

@@ -12,7 +12,7 @@ import { TrelloCardService } from './trello-card.service';
 export class TrelloCardComponent implements OnInit {
   @Input() card: Card;
 
-  @Output() cardUpdate: EventEmitter<Card>;
+  @Output() cardEdit = new EventEmitter<Card>();
   @Output() onDeleteCard = new EventEmitter<Card>();
 
   editingCard = false;
@@ -23,49 +23,15 @@ export class TrelloCardComponent implements OnInit {
     private _ref: ChangeDetectorRef,
     private ws: WebSocketService,
     private _cardService: TrelloCardService) {
-    this.zone = new NgZone({ enableLongStackTrace: false });
-    this.cardUpdate = new EventEmitter();
+    // this.zone = new NgZone({ enableLongStackTrace: false });
   }
 
   ngOnInit() {
-    // this.ws.onUpdateCard().subscribe((card: Card) => {
-    //   if (this.card._id === card._id) {
-    //     this.card.title = card.title;
-    //     this.card.order = card.order;
-    //     this.card.columnId = card.columnId;
-    //   }
-    // });
   }
 
-  blurOnEnter(event) {
-    if (event.keyCode === 13) {
-      event.target.blur();
-    } else if (event.keyCode === 27) {
-      this.card.title = this.currentTitle;
-      this.editingCard = false;
-    }
-  }
 
   editCard() {
-    this.editingCard = true;
-    this.currentTitle = this.card.title;
 
-    let textArea = this.el.nativeElement.getElementsByTagName('textarea')[0];
-
-    setTimeout(function() {
-      textArea.focus();
-    }, 0);
-  }
-
-  updateCard() {
-    if (!this.card.title || this.card.title.trim() === '') {
-      this.card.title = this.currentTitle;
-    }
-
-    // this._cardService.edit(this.card).subscribe(res => {
-    //   this.ws.updateCard(this.card.boardId, this.card);
-    // });
-    this.editingCard = false;
   }
 
   //TODO: check lifecycle

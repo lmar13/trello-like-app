@@ -1,5 +1,4 @@
 import { NbDialogService } from '@nebular/theme';
-import { AddEditCardComponent } from './../add-edit-card/add-edit-card.component';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SortablejsOptions } from 'angular-sortablejs';

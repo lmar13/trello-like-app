@@ -4,12 +4,10 @@
     <nb-actions size="small" style="width: 100%;">
       <nb-action>Project: {{board.title}}</nb-action>
       <nb-action style="cursor: pointer;">
-        <ngx-add-edit-card
-          [opt]="'add'"
-          [title]="'Add new card'"
+        <ngx-add-card
           [boardId]="board._id"
           (onAddCard)="addCard($event)"
-        ></ngx-add-edit-card>
+        ></ngx-add-card>
       </nb-action>
       <nb-action icon="nb-gear" disabled></nb-action>
     </nb-actions>

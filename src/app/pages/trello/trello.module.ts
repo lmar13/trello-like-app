@@ -14,9 +14,10 @@ import { TrelloComponent } from "./trello.component";
 // import { WebSocketService } from "../../@core/data/ws.service";
 import { SortablejsModule } from "angular-sortablejs";
 import {DragDropModule} from '@angular/cdk/drag-drop';
-import { AddEditCardComponent } from './add-edit-card/add-edit-card.component';
+import { AddCardComponent } from './add-card/add-card.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TagInputModule } from 'ngx-chips';
+import { EditCardComponent } from './edit-card/edit-card.component';
 
 
 const TRELLO_COMPONENTS = [
@@ -25,7 +26,8 @@ const TRELLO_COMPONENTS = [
   TrelloBoardComponent,
   TrelloCardComponent,
   TrelloColumnComponent,
-  AddEditCardComponent,
+  AddCardComponent,
+  EditCardComponent,
   OrderBy,
   Where,
 ];
@@ -44,7 +46,7 @@ const TRELLO_COMPONENTS = [
     ReactiveFormsModule
   ],
   declarations: [
-    ...TRELLO_COMPONENTS
+    ...TRELLO_COMPONENTS,
   ],
   providers: [
     // SmartTableService,

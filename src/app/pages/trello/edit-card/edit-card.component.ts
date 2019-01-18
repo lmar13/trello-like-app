@@ -1,26 +1,24 @@
-import { Component, Input, OnDestroy, TemplateRef, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, TemplateRef, EventEmitter, Output, Input, OnDestroy } from '@angular/core';
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { NbDialogService } from '@nebular/theme';
+import { TrelloColumnService } from '../trello-column/trello-column.service';
 import { Subscription } from 'rxjs';
 import { Column, Card } from '../../../@core/model';
-import { TrelloColumnService } from './../trello-column/trello-column.service';
 
 @Component({
-  selector: 'ngx-add-edit-card',
-  templateUrl: './add-edit-card.component.html',
-  styleUrls: ['./add-edit-card.component.scss']
+  selector: 'ngx-edit-card',
+  templateUrl: './edit-card.component.html',
+  styleUrls: ['./edit-card.component.scss']
 })
-export class AddEditCardComponent implements OnDestroy {
+export class EditCardComponent implements OnDestroy {
+  @Input() card: Card;
 
-  @Input() opt: string;
-  @Input() title: string;
-  @Input() boardId: string;
+  @Output() onEditCard = new EventEmitter<Card>();
 
-  @Output() onAddCard = new EventEmitter<Card>();
-
+  title = "Edit card";
   columns = [] as Column[];
-  users = ['Planning', 'Development', 'Testing', 'Ready to archive'];
-  userSelected = ['Planning', 'Testing'];
+  // users = ['Planning', 'Development', 'Testing', 'Ready to archive'];
+  // userSelected = ['Planning', 'Testing'];
 
   form: FormGroup;
   dialogRef: any;
@@ -39,11 +37,11 @@ export class AddEditCardComponent implements OnDestroy {
 
   private createForm() {
     this.form = this.fb.group({
-      title: ['', Validators.required],
-      content: [''],
-      columnId: ['', Validators.required],
-      assignedUsers: [this.userSelected, Validators.required],
-      owner: ['']
+      title: [this.card.title, Validators.required],
+      content: [this.card.content],
+      columnId: [this.card.columnId, Validators.required],
+      assignedUsers: [this.card.assignedUsers, Validators.required],
+      owner: [this.card.owner]
     });
   }
 
@@ -60,11 +58,11 @@ export class AddEditCardComponent implements OnDestroy {
     formData = {
       ...formData,
       owner: 'owner',
-      boardId: this.boardId,
+      boardId: this.card.boardId,
       order: 0,
     };
 
-    this.onAddCard.emit(formData);
+    this.onEditCard.emit(formData);
     this.dialogRef.close();
   }
 
