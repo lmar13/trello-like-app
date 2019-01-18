@@ -3,10 +3,16 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ngx-admin-demo": {
+    "trello-like-app": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
+      "prefix": "ngx",
+      "schematics": {
+        "@schematics/angular:component": {
+            "styleext": "scss"
+        }
+      },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
