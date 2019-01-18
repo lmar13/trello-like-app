@@ -24,12 +24,14 @@ export class UserIsAuthorizeGuard implements CanActivate, CanLoad {
     const user = this.authService.decToken;
 
 
+
+    return user ? ( user.role !== 'admin' ? false : true) : false;
     // if (user) {
-    //   if (user.SYSTEM_ROLE !== 'ROLE_SYSTEM_ADMIN') {
+    //   if (user.role !== 'admin') {
     //     // this.router.navigate(['/solutions']);
     //     return false;
     //   }
-      return true;
+    //   return true;
     // }
     // return false;
   }
