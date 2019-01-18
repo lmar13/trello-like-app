@@ -9,7 +9,7 @@ export const subMenu: NbMenuItem[] = [
   },
   {
     title: 'My projects',
-    link: '/pages/trello/1',  // change to correct value
+    link: '/pages/trello/user',
   },
 ];
 

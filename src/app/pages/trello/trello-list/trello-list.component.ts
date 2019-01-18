@@ -1,3 +1,4 @@
+import { AuthService } from './../../../@core/auth/shared/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalDataSource } from 'ng2-smart-table';
@@ -49,18 +50,19 @@ export class TrelloListComponent implements OnInit {
 
   source: LocalDataSource = new LocalDataSource();
 
-  constructor(
-      private smartTableService: SmartTableService,
-      private activeRoute: ActivatedRoute,
-      private router: Router,
-    ) {
-    this.activeRoute.params.subscribe(x => {
-      if(x.userId){
-        this.smartTableService.getDataForUser(x.userId).subscribe(data => this.source.load(data.slice(0,5)))
-        return;
+  constructor(private smartTableService: SmartTableService,
+              private activeRoute: ActivatedRoute,
+              private authService: AuthService,
+              private router: Router) {
+    this.activeRoute.url.subscribe(x => {
+      if(x.length > 0){
+        this.smartTableService.getDataForUser(this.authService.decToken.id)
+          .subscribe(data => this.source.load(data.slice(0,5)));
+          return;
       }
-      this.smartTableService.getData().subscribe(data => this.source.load(data))
-    })
+      this.smartTableService.getData()
+        .subscribe(data => this.source.load(data))
+    });
   }
 
   ngOnInit() {
