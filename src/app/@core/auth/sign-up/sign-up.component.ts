@@ -19,10 +19,10 @@ export interface SignUpCredentials {
   styleUrls: ['./sign-up.component.scss']
 })
 export class SignUpComponent implements OnInit {
-  authForm: FormGroup;
+  registerForm: FormGroup;
   passGroup: FormGroup;
   hasLoginError = false;
-  signedUp = false;
+  submitted = false;
 
   credentials = {} as SignUpCredentials;
 
@@ -34,29 +34,29 @@ export class SignUpComponent implements OnInit {
   }
 
   signUp() {
-    this.credentials = this.authForm.value;
-    console.log(this.credentials);
+    this.credentials = this.registerForm.value;
     this.authService.signUp(this.credentials)
       .subscribe((result: boolean) => {
         this.hasLoginError = !result;
-        this.signedUp = true;
+        this.submitted = true;
       });
   }
 
   private createForm() {
-    this.authForm = this.fb.group({
+    this.registerForm = this.fb.group({
       name: ['', Validators.required],
       surname: ['', Validators.required],
       email: ['', Validators.compose([
         Validators.required,
         (control: AbstractControl) => this.invalidEmail(control)])],
-      empid: ['', Validators.compose([
+      empId: ['', Validators.compose([
         Validators.required,
         (control: AbstractControl) => this.invalidEmpId(control)])],
       passwords: this.fb.group({
         pass: ['', Validators.compose([
           Validators.required,
-          (control: AbstractControl) => this.invalidPass(control)])],
+          Validators.minLength(4)
+        ])],
         confirmPass: ['', Validators.required]
       }, {validator: this.checkPasswords})
     });
@@ -81,17 +81,6 @@ export class SignUpComponent implements OnInit {
           return null;
       }
       return { invalidEmpId: true };
-    }
-  }
-
-  invalidPass(control: AbstractControl): ValidationErrors | null {
-    const inputValue: string = control.value;
-
-    if (inputValue) {
-      if (inputValue === '' || inputValue.length >= 4 ) {
-        return null;
-      }
-      return { invalidPass: true };
     }
   }
 

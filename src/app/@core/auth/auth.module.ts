@@ -3,7 +3,7 @@ import { AuthRoutingModule, components } from './auth-routing.module';
 import { NbAuthModule } from '@nebular/auth';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { NbInputModule, NbCheckboxModule } from '@nebular/theme';
+import { NbInputModule, NbCheckboxModule, NbAlertModule } from '@nebular/theme';
 
 
 @NgModule({
@@ -15,6 +15,7 @@ import { NbInputModule, NbCheckboxModule } from '@nebular/theme';
     NbAuthModule,
     NbInputModule,
     NbCheckboxModule,
+    NbAlertModule,
   ],
   declarations: [
     components

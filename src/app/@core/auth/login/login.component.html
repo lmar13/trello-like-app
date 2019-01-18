@@ -1,12 +1,13 @@
 <h1 id="title" class="title">Login</h1>
 <p class="sub-title">Hello! Log in with your email.</p>
 
-<!-- <nb-alert *ngIf="showMessages.error && errors?.length && !submitted" outline="danger" role="alert">
+<nb-alert *ngIf="hasLoginError && submitted" outline="danger" role="alert">
   <p class="alert-title"><b>Oh snap!</b></p>
   <ul class="alert-message-list">
-    <li *ngFor="let error of errors" class="alert-message">{{ error }}</li>
+    <li class="alert-message">You need to check if You put correct credentials</li>
+    <!-- <li *ngFor="let error of errors" class="alert-message">{{ error }}</li> -->
   </ul>
-</nb-alert> -->
+</nb-alert>
 
 <!-- <nb-alert *ngIf="showMessages.success && messages?.length && !submitted" outline="success" role="alert">
   <p class="alert-title"><b>Hooray!</b></p>
@@ -73,7 +74,7 @@
   <button nbButton
           fullWidth
           status="success"
-          [disabled]="submitted || !authForm.valid"
+          [disabled]="(submitted && !hasLoginError) || !authForm.valid"
           [class.btn-pulse]="submitted"
           (click)="login()">
     Log In

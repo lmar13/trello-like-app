@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import 'rxjs/add/operator/finally';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { EnvironmentProviderService } from '../../data/environment-provider.service';
 import { User } from '../../model';
 import { SignUpCredentials } from '../sign-up/sign-up.component';
@@ -50,14 +50,14 @@ export class AuthService {
     return this.httpClient.post<User>(`${this.baseApiUrl}/login`, { user: { email, password } })
       .pipe(
         map(( authUser: User ) => {
-          authUserStorage.set({...authUser});
+          authUserStorage.set(authUser);
           this.isAuthenticatedSubject$.next(true);
           this.router.navigate(['/']);
 
           return true;
         }),
         catchError(err => {
-          return of(err);
+          return of(false);
         })
 
       );
@@ -71,8 +71,17 @@ export class AuthService {
     }).subscribe();
   }
 
-  signUp(credentials: SignUpCredentials): Observable<boolean> {
-    return of(false);
+  signUp(credentials: SignUpCredentials): Observable<boolean | User> {
+    return this.httpClient.post<User>(`${this.baseApiUrl}/signup`, credentials)
+      .pipe(
+        tap(value => {
+          this.router.navigate(['/auth/login']);
+          return of(true);
+        }),
+        catchError(err => {
+          return of(false);
+        }),
+      );
   }
 
   activateAcc(token: string): Observable<boolean> {
@@ -109,12 +118,12 @@ export class AuthService {
   }
 
   private decodeToken(): User {
-    return this.helper.decodeToken(this.getToken());
+    return this.getToken() === '' ? '' : this.helper.decodeToken(this.getToken());
   }
 
   private getToken(): string {
     const authObj = authUserStorage.get();
-    return authObj ? authObj.user.token : '';
+    return authObj ? authObj.token : '';
   }
 
 }
