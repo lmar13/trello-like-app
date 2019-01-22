@@ -1,9 +1,10 @@
-import { NbDialogService } from '@nebular/theme';
-import { Component, OnInit } from '@angular/core';
+import { UserService } from './../../../@core/data/users.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SortablejsOptions } from 'angular-sortablejs';
+import { Subscription } from 'rxjs';
 import { WebSocketService } from '../../../@core/data/ws.service';
-import { Board, Card, Column } from '../../../@core/model';
+import { Board, Card, Column, User } from '../../../@core/model';
 import { TrelloCardService } from '../trello-card/trello-card.service';
 import { TrelloBoardService } from './trello-board.service';
 
@@ -12,12 +13,14 @@ import { TrelloBoardService } from './trello-board.service';
   templateUrl: './trello-board.component.html',
   styleUrls: ['./trello-board.component.scss']
 })
-export class TrelloBoardComponent implements OnInit {
+export class TrelloBoardComponent implements OnInit, OnDestroy {
 
   board = {} as Board;
   columns = [] as Column[];
   cards = [] as Card[];
+  users = [] as User[];
   moveCardData = null;
+  subscriptions: Subscription[] = [];
 
   options: SortablejsOptions = {
     group: 'board',
@@ -33,8 +36,8 @@ export class TrelloBoardComponent implements OnInit {
     private socketService: WebSocketService,
     private boardService: TrelloBoardService,
     private cardService: TrelloCardService,
+    private userService: UserService,
     private route: ActivatedRoute,
-    private dialogService: NbDialogService,
   ) { }
 
   ngOnInit() {
@@ -45,12 +48,16 @@ export class TrelloBoardComponent implements OnInit {
   ngOnDestroy(){
     console.log(`leaving board ${this.board._id}`);
     this.socketService.leave(this.board._id);
+    this.subscriptions.map(sub => sub.unsubscribe());
   }
 
   initConfig() {
     this.route.params.subscribe(param => {
       this.board._id = param.boardId;
       this.socketService.join(param.boardId);
+      this.socketService.onRecconection().subscribe(() => {
+        this.socketService.join(param.boardId);
+      });
     });
 
     this.socketService.onUpdateCard().subscribe(cards => {
@@ -61,12 +68,19 @@ export class TrelloBoardComponent implements OnInit {
     this.socketService.onAddCard().subscribe(card => {
       this.cards.push(card);
       this.columns = this.refreshDataInColumn();
-    })
+    });
+
+    this.socketService.onEditCard().subscribe(card => {
+      this.cards = this.cards.map(val => val._id === card._id ? card : val);
+      this.columns = this.refreshDataInColumn();
+    });
 
     this.socketService.onDeleteCard().subscribe(card => {
       this.cards = this.cards.filter(val => val._id !== card._id);
       this.columns = this.refreshDataInColumn();
-    })
+    });
+
+    this.subscriptions.push(this.cardService.editCardState.subscribe(card => this.editCard(card)));
   }
 
   initFetchData() {
@@ -75,6 +89,8 @@ export class TrelloBoardComponent implements OnInit {
         [this.board, this.columns, this.cards] = data
         this.columns = this.refreshDataInColumn();
       });
+
+    this.userService.getUsers().subscribe(users => this.users = users);
   }
 
   refreshDataInColumn() {
@@ -96,6 +112,15 @@ export class TrelloBoardComponent implements OnInit {
         this.cards.push(card);
         this.columns = this.refreshDataInColumn();
         this.socketService.addCard(this.board._id, card);
+      });
+  }
+
+  editCard(card: Card) {
+    this.cardService.edit(card)
+      .subscribe(card => {
+        this.cards = this.cards.map(val => val._id === card._id ? card : val);
+        this.columns = this.refreshDataInColumn();
+        this.socketService.editCard(this.board._id, card);
       });
   }
 

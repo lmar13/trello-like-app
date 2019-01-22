@@ -25,7 +25,12 @@ export class TrelloBoardService {
   }
 
   getAll(): Observable<Board[]> {
-    return this.httpClient.get<Board[]>(`${this.baseUrl}/board`)
+    return this.httpClient.get<Board[]>(`${this.baseUrl}/boards`)
+  }
+
+  getDataForUser(id: string): Observable<Board[]> {
+    // return this.httpClient.get<string[]>(`./../../../assets/data/data.json`);
+    return this.httpClient.get<Board[]>(`${this.baseUrl}/boardsForUser/${id}`)
   }
 
   getById(id: string): Observable<Board> {

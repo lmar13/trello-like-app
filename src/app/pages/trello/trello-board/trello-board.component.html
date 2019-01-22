@@ -6,6 +6,8 @@
       <nb-action style="cursor: pointer;">
         <ngx-add-card
           [boardId]="board._id"
+          [columns]="columns"
+          [users]="users"
           (onAddCard)="addCard($event)"
         ></ngx-add-card>
       </nb-action>
@@ -34,7 +36,7 @@
           (drop)="moveCard(column.cards)"
         >
           <div *ngFor="let card of column.cards" [attr.data-card-id]="card._id">
-            <ngx-trello-card [card]="card" (onDeleteCard)="deleteCard($event)"></ngx-trello-card>
+            <ngx-trello-card [card]="card" [columns]="columns" [users]="users" (onDeleteCard)="deleteCard($event)"></ngx-trello-card>
           </div>
         </div>
       </div>

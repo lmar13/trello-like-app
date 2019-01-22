@@ -17,6 +17,7 @@ import { ThemeModule } from './@theme/theme.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthInterceptor } from './@core/auth/shared/auth.interceptor';
+import { NbDatepickerModule } from '@nebular/theme';
 
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
@@ -30,6 +31,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     AppRoutingModule,
     SocketIoModule.forRoot(config),
     NgbModule.forRoot(),
+    NbDatepickerModule.forRoot(),
     ThemeModule.forRoot(),
     CoreModule.forRoot(),
     SortablejsModule.forRoot({ animation: 150 })

@@ -1,6 +1,6 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from "@angular/core";
-import { NbActionsModule, NbDialogModule } from "@nebular/theme";
+import { NbActionsModule, NbDialogModule, NbDatepickerModule } from "@nebular/theme";
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { SmartTableService } from '../../@core/data/smart-table.service';
 import { OrderBy, Where } from "../../@core/pipes";
@@ -18,6 +18,7 @@ import { AddCardComponent } from './add-card/add-card.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TagInputModule } from 'ngx-chips';
 import { EditCardComponent } from './edit-card/edit-card.component';
+import { EditBoardComponent } from './edit-board/edit-board.component';
 
 
 const TRELLO_COMPONENTS = [
@@ -28,6 +29,7 @@ const TRELLO_COMPONENTS = [
   TrelloColumnComponent,
   AddCardComponent,
   EditCardComponent,
+  EditBoardComponent,
   OrderBy,
   Where,
 ];
@@ -41,12 +43,14 @@ const TRELLO_COMPONENTS = [
     SortablejsModule,
     DragDropModule,
     NbDialogModule.forChild(),
+    NbDatepickerModule,
     TagInputModule,
     FormsModule,
     ReactiveFormsModule
   ],
   declarations: [
     ...TRELLO_COMPONENTS,
+
   ],
   providers: [
     // SmartTableService,

@@ -4,15 +4,13 @@
       <nb-actions size="small">
         <nb-action (click)="getRowData()">Open</nb-action>
         <nb-action>Add</nb-action>
-        <nb-action>Edit</nb-action>
+        <nb-action>
+          <ngx-edit-board [users]="users"
+                          [title]="'Edit'"
+                          [board]="selectedRow"
+                          (onEditBoard)="editBoard($event)"></ngx-edit-board></nb-action>
         <nb-action>Delete</nb-action>
-        <!-- <nb-action icon="nb-compose"></nb-action> -->
-        <!-- <nb-action icon="nb-person"></nb-action>
-        <nb-action icon="nb-home"></nb-action> -->
         <nb-action icon="nb-gear" disabled></nb-action>
-        <!-- <nb-action>
-          Custom Action
-        </nb-action> -->
       </nb-actions>
 
     </nb-card-body>

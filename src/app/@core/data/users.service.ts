@@ -1,40 +1,25 @@
 
 import { of as observableOf,  Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { EnvironmentProviderService } from './environment-provider.service';
+import { HttpClient } from '@angular/common/http';
+import { User } from '../model';
 
-
-let counter = 0;
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
+  private baseUrl: string;
 
-  private users = {
-    nick: { name: 'Nick Jones', picture: 'assets/images/nick.png' },
-    eva: { name: 'Eva Moor', picture: 'assets/images/eva.png' },
-    jack: { name: 'Jack Williams', picture: 'assets/images/jack.png' },
-    lee: { name: 'Lee Wong', picture: 'assets/images/lee.png' },
-    alan: { name: 'Alan Thompson', picture: 'assets/images/alan.png' },
-    kate: { name: 'Kate Martinez', picture: 'assets/images/kate.png' },
-  };
-
-  private userArray: any[];
-
-  constructor() {
-    // this.userArray = Object.values(this.users);
+  constructor(private httpClient: HttpClient,
+    envProvider: EnvironmentProviderService,
+  ) {
+    this.baseUrl = envProvider.current.apiBaseUri;
   }
 
-  getUsers(): Observable<any> {
-    return observableOf(this.users);
+  getUsers(): Observable<User[]> {
+    return this.httpClient.get<User[]>(`${this.baseUrl}/users`);
   }
 
-  getUserArray(): Observable<any[]> {
-    return observableOf(this.userArray);
-  }
-
-  getUser(): Observable<any> {
-    counter = (counter + 1) % this.userArray.length;
-    return observableOf(this.userArray[counter]);
-  }
 }

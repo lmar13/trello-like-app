@@ -1,8 +1,13 @@
+import { TrelloBoardService } from './../trello-board/trello-board.service';
 import { AuthService } from './../../../@core/auth/shared/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalDataSource } from 'ng2-smart-table';
 import { SmartTableService } from './../../../@core/data/smart-table.service';
+import { User, Board } from '../../../@core/model';
+import { UserService } from '../../../@core/data/users.service';
+import { validateConfig } from '@angular/router/src/config';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'trello-list',
@@ -12,6 +17,7 @@ import { SmartTableService } from './../../../@core/data/smart-table.service';
 export class TrelloListComponent implements OnInit {
 
   selectedRow = null;
+  users: User[] = [];
   settings = {
     actions: false,
     // actions: {
@@ -34,16 +40,13 @@ export class TrelloListComponent implements OnInit {
     columns: {
       _id: {
         title: 'ID',
-        type: 'string',
         editable: false,
       },
       title: {
-        title: 'Project Name',
-        type: 'string',
+        title: 'Project Name'
       },
       owner: {
-        title: 'Owner',
-        type: 'string',
+        title: 'Owner'
       }
     },
   };
@@ -53,19 +56,35 @@ export class TrelloListComponent implements OnInit {
   constructor(private smartTableService: SmartTableService,
               private activeRoute: ActivatedRoute,
               private authService: AuthService,
+              private userService: UserService,
+              private boardService: TrelloBoardService,
               private router: Router) {
-    this.activeRoute.url.subscribe(x => {
-      if(x.length > 0){
-        this.smartTableService.getDataForUser(this.authService.decToken.id)
-          .subscribe(data => this.source.load(data.slice(0,5)));
-          return;
-      }
-      this.smartTableService.getData()
-        .subscribe(data => this.source.load(data))
-    });
+
+    this.fetchDataAndRefreshTable();
+    this.userService.getUsers().subscribe(users => this.users = users);
   }
 
   ngOnInit() {
+  }
+
+  fetchDataAndRefreshTable() {
+    this.activeRoute.url.subscribe(x => {
+
+
+      if(x.length > 0){
+        this.boardService.getDataForUser(this.authService.decToken._id)
+          .pipe(
+            map(val => val.map(x => ({...x, owner: x.owner.email}))),
+          )
+          .subscribe(data => this.source.load(data));
+          return;
+      }
+      this.boardService.getAll()
+        .pipe(
+          map(val => val.map(x => ({...x, owner: x.owner.email}))),
+        )
+        .subscribe(data => this.source.load(data))
+    });
   }
 
   onDeleteConfirm(event): void {
@@ -77,7 +96,11 @@ export class TrelloListComponent implements OnInit {
   }
 
   onUserRowSelect(event) {
-    this.selectedRow = event.selected[0];
+    if(event.isSelected){
+      this.selectedRow = event.data;
+    } else {
+      this.selectedRow = null;
+    }
   }
 
   getRowData() {
@@ -86,6 +109,12 @@ export class TrelloListComponent implements OnInit {
     } else {
       alert('You need to choose project');
     }
+  }
+
+  editBoard(board: Board) {
+    this.boardService.edit(board).subscribe(() => {
+      this.fetchDataAndRefreshTable();
+    });
   }
 
 }

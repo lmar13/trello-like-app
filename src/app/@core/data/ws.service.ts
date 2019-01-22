@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import { EnvironmentProviderService } from './environment-provider.service';
 import { Observable } from 'rxjs';
 import { Socket } from 'ngx-socket-io';
+import { tap } from 'rxjs/operators';
 
 // declare var io: any;
 
@@ -34,6 +35,10 @@ export class WebSocketService {
 
   leave(boardId: string) {
     this.socket.emit('leaveBoard', boardId);
+  }
+
+  onRecconection(): Observable<any> {
+    return this.socket.fromEvent('reconnect');
   }
 
   addCard(boardId: string, card: Card) {
