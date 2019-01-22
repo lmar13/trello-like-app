@@ -7,8 +7,15 @@ var cardSchema = mongoose.Schema({
     columnId: String,
     boardId: String,
     order: Number,
-    owner: String,
-    assignedUsers: [String]
+    owner: {
+      _id: String,
+      email: String,
+    },
+    assignedUsers: [{
+      value: String,
+      display: String,
+      readonly: Boolean,
+    }]
 });
 
 module.exports = mongoose.model('Card', cardSchema);

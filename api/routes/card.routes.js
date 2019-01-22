@@ -48,35 +48,38 @@ module.exports = function(app) {
     /* Update */
     app.put('/card/:id', auth.required, function (req, res) {
         log('PUT /card/:id');
-        Card.findById(req.params.id, function(err, card) {
-            if (err) {
-                res.json({info: 'error during find card', error: err});
-            };
-            if (card) {
-                _.merge(card, req.body);
-                card.save(function(err) {
-                    if (err) {
-                        res.json({info: 'error during card update', error: err});
-                    };
-                    res.json({info: 'card updated successfully'});
-                });
-            } else {
-                res.json({info: 'card not found'});
-            }
-
+        Card.replaceOne({ _id: req.params.id}, req.body, function(err, raw){
+          if (err) {
+            res.status(404).json({info: 'error during card update', error: err});
+          };
+          res.status(200).json(req.body);
         });
     });
 
     app.put('/cardAll', auth.required, function (req, res) {
       log('PUT /cardAll');
-      console.log(req.body);
+      // console.log(req.body);
       Card.find({boardId: req.body.boardId}, function(error, cards) {
         if (error) {
           res.status(404).json({info: 'Unable to find cards', error});
         }
         if (cards) {
-          log(req.body.cards);
-          res.status(200).json(_.merge(cards, req.body.cards));
+          // log(req.body.cards);
+          _.merge(cards, req.body.cards);
+
+          Card.bulkWrite(cards.map(card => {
+            return {
+              replaceOne: {
+                "filter": { "_id" : card._id },
+                "replacement" : card
+              }
+            }
+          }), (err) => {
+            if (err) {
+              res.json({info: 'error during cards movement', error: err});
+            };
+            res.status(200).json(cards);
+          })
         } else {
           res.status(404).json({info: 'Cards not found'});
         }
@@ -86,7 +89,7 @@ module.exports = function(app) {
     /* Delete */
     app.delete('/card/:id', auth.required, function (req, res) {
         log('DELETE /card/:id');
-        Card.findByIdAndRemove(req.params.id, function(err, ) {
+        Card.findByIdAndRemove(req.params.id, function(err) {
             if (err) {
                 res.json({info: 'error during remove card', error: err});
             };

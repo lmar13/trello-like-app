@@ -4,10 +4,17 @@ mongoose.Promise = global.Promise;
 console.log('inializing Schema');
 var boardSchema = mongoose.Schema({
     title: String,
-    owner: String,
+    owner: {
+      _id: String,
+      email: String,
+    },
     startDate: Date,
     endDate: Date,
-    assignedUsers: [String]
+    assignedUsers: [{
+      value: String,
+      display: String,
+      readonly: Boolean,
+    }]
 });
 
 console.log('exporting Schema');

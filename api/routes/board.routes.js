@@ -32,13 +32,11 @@ module.exports = function(app) {
         });
     });
 
-    app.get('/board', auth.required, function (req, res) {
-      log('GET /board?userId', req.query.userId);
+    app.get('/boardsForUser/:id', auth.required, function (req, res) {
+      log('GET /boardsForUser/:id', req.params.id);
 
-      Board.find({assignedUsers: req.query.userId}, function(err, boards) {
-
+      Board.find({'assignedUsers.value': req.params.id}, function(err, boards) {
         if (err) {
-          console.error(err);
           res.status(404).json({info: 'error during find boards', error: err});
         };
         if (boards) {
@@ -102,25 +100,31 @@ module.exports = function(app) {
     /* Update */
     app.put('/board/:id', auth.required, function (req, res) {
         log('PUT /board/:id', req.body);
-        Board.findById(req.params.id, function(err, board) {
-            if (err) {
-                res.json({info: 'error during find board', error: err});
-            };
-            if (board) {
-                log('POST /board', board);
-                _.merge(board, req.body);
-                log('POST /board', board);
-                board.save(function(err) {
-                    if (err) {
-                        res.json({info: 'error during board update', error: err});
-                    };
-                    res.json({info: 'board updated successfully'});
-                });
-            } else {
-                res.json({info: 'board not found'});
-            }
+        // Board.findById(req.params.id, function(err, board) {
+        //     if (err) {
+        //         res.json({info: 'error during find board', error: err});
+        //     };
+        //     if (board) {
+        //         log('POST /board', board);
+        //         _.merge(board, req.body);
+        //         log('POST /board', board);
+        //         board.save(function(err) {
+        //             if (err) {
+        //                 res.json({info: 'error during board update', error: err});
+        //             };
+        //             res.json({info: 'board updated successfully'});
+        //         });
+        //     } else {
+        //         res.json({info: 'board not found'});
+        //     }
 
-        });
+        // });
+        Board.replaceOne({ _id: req.params.id}, req.body, function(err) {
+          if(err) {
+            res.status(404).json({info: 'error during updating board', error: err});
+          }
+          res.status(200).json(req.body);
+        })
     });
 
     /* Delete */
