@@ -1,5 +1,6 @@
+import { User } from './../../../@core/model/user.model';
 import {Component, OnInit, Input, Output, EventEmitter, ElementRef, ChangeDetectorRef, NgZone} from '@angular/core';
-import { Card } from '../../../@core/model';
+import { Card, Column } from '../../../@core/model';
 import { WebSocketService } from '../../../@core/data/ws.service';
 import { TrelloCardService } from './trello-card.service';
 
@@ -11,6 +12,8 @@ import { TrelloCardService } from './trello-card.service';
 })
 export class TrelloCardComponent implements OnInit {
   @Input() card: Card;
+  @Input() columns: Column[];
+  @Input() users: User[];
 
   @Output() cardEdit = new EventEmitter<Card>();
   @Output() onDeleteCard = new EventEmitter<Card>();
@@ -28,12 +31,6 @@ export class TrelloCardComponent implements OnInit {
 
   ngOnInit() {
   }
-
-
-  editCard() {
-
-  }
-
   //TODO: check lifecycle
   private ngOnDestroy() {
     //this._ws.onCardUpdate.unsubscribe();

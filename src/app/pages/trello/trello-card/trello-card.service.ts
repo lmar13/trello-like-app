@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs/Rx';
+import { Observable, Subject } from 'rxjs/Rx';
 import {Injectable} from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Card } from '../../../@core/model';
@@ -11,6 +11,9 @@ import { catchError, map } from 'rxjs/operators';
 })
 export class TrelloCardService {
   private baseUrl: string;
+
+  private editCardStateSource = new Subject<Card>();
+  editCardState = this.editCardStateSource.asObservable();
 
   constructor(
     private httpClient: HttpClient,
@@ -71,5 +74,9 @@ export class TrelloCardService {
         }),
         map(value => value as Card)
       );
+  }
+
+  changeEditState(card: Card) {
+    this.editCardStateSource.next(card);
   }
 }

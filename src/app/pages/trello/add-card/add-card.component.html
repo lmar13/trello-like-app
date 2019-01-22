@@ -31,9 +31,12 @@
           <!-- <nb-select formControlName="assignedUsers" placeholder="Assign users" multiple outline status="primary" shape="semi-round">
             <nb-option *ngFor="let user of users" [value]="user">{{ user }}</nb-option>
           </nb-select> -->
-          <tag-input [theme]="'foundation-theme'" formControlName="assignedUsers" [onlyFromAutocomplete]="true" [modelAsStrings]="true">
+          <tag-input  formControlName="assignedUsers"
+                      [theme]="'foundation-theme'"
+                      [onlyFromAutocomplete]="true"
+                      [modelAsStrings]="false">
             <tag-input-dropdown [showDropdownIfEmpty]="true"
-                                [autocompleteItems]="users"
+                                [autocompleteItems]="requestAutocompleteItems"
                                 [zIndex]="1100">
             </tag-input-dropdown>
           </tag-input>
