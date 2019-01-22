@@ -1,3 +1,4 @@
+import { AutoCompleteTag } from './auto-complete-tag.model';
 
 export interface Card {
 	_id: string;
@@ -6,6 +7,9 @@ export interface Card {
   columnId: string;
   boardId: string;
   order: number;
-  owner: string;
-  assignedUsers: string[];
+  owner: {
+    _id: string;
+    email: string
+  };
+  assignedUsers: AutoCompleteTag[];
 }
