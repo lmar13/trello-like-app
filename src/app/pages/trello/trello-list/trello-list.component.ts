@@ -18,6 +18,7 @@ export class TrelloListComponent implements OnInit {
 
   selectedRow = null;
   users: User[] = [];
+  boards: Board[] = [];
   settings = {
     actions: false,
     // actions: {
@@ -69,21 +70,19 @@ export class TrelloListComponent implements OnInit {
 
   fetchDataAndRefreshTable() {
     this.activeRoute.url.subscribe(x => {
-
-
       if(x.length > 0){
         this.boardService.getDataForUser(this.authService.decToken._id)
-          .pipe(
-            map(val => val.map(x => ({...x, owner: x.owner.email}))),
-          )
-          .subscribe(data => this.source.load(data));
+          .subscribe(boards => {
+            this.boards = boards;
+            this.source.load(boards.map(val => ({...val, owner: val.owner.email})));
+          });
           return;
       }
       this.boardService.getAll()
-        .pipe(
-          map(val => val.map(x => ({...x, owner: x.owner.email}))),
-        )
-        .subscribe(data => this.source.load(data))
+        .subscribe(boards => {
+          this.boards = boards;
+          this.source.load(boards.map(val => ({...val, owner: val.owner.email})));
+        });
     });
   }
 
@@ -97,7 +96,7 @@ export class TrelloListComponent implements OnInit {
 
   onUserRowSelect(event) {
     if(event.isSelected){
-      this.selectedRow = event.data;
+      this.selectedRow = this.boards.filter(board => board._id === event.data._id)[0];
     } else {
       this.selectedRow = null;
     }
