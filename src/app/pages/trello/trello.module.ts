@@ -19,6 +19,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TagInputModule } from 'ngx-chips';
 import { EditCardComponent } from './edit-card/edit-card.component';
 import { EditBoardComponent } from './edit-board/edit-board.component';
+import { AddBoardComponent } from './add-board/add-board.component';
 
 
 const TRELLO_COMPONENTS = [
@@ -50,6 +51,7 @@ const TRELLO_COMPONENTS = [
   ],
   declarations: [
     ...TRELLO_COMPONENTS,
+    AddBoardComponent,
 
   ],
   providers: [

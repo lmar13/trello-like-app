@@ -1,7 +1,7 @@
-import { UserIsAuthorizeGuard } from './../@core/auth/shared/user-is-authorize.guard';
-import { UserIsSignedInGuard } from './../@core/auth/shared/user-is-signed-in.guard';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { UserIsAuthorizeGuard } from './../@core/auth/shared/user-is-authorize.guard';
+import { UserIsSignedInGuard } from './../@core/auth/shared/user-is-signed-in.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PagesComponent } from './pages.component';
 

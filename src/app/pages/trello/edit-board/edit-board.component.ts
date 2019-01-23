@@ -43,14 +43,11 @@ export class EditBoardComponent {
   }
 
   private getDefaultData() {
-    // this.columnService.getAll().subscribe(columns => this.columns = columns);
-    // this.userService.getUsers().subscribe(users => {
       this.requestAutocompleteItems = this.users.map(user => ({
           value: user._id,
           display: user.email,
           readonly: false,
         }));
-    // });
   }
 
   open(dialog: TemplateRef<any>) {
@@ -69,13 +66,12 @@ export class EditBoardComponent {
     formData = {
       ...formData,
       _id,
-      owner: {
-        _id: '5c408129915516ab04398a1f',
-        email: 'admin@example.com'
-      },
+      owner,
     }
 
-    // this.onEditBoard.emit(formData);
+    console.log(formData);
+
+    this.onEditBoard.emit(formData);
     this.dialogRef.close();
   }
 

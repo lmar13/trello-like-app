@@ -110,6 +110,12 @@ export class TrelloListComponent implements OnInit {
     }
   }
 
+  addBoard(board: Board){
+    this.boardService.add(board).subscribe(() => {
+      this.fetchDataAndRefreshTable();
+    });
+  }
+
   editBoard(board: Board) {
     this.boardService.edit(board).subscribe(() => {
       this.fetchDataAndRefreshTable();
